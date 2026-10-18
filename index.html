@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마비오라 v2.0.2 가이드</title>
+<meta name="description" content="마비오라(MabiAura) v2.0.2 설치 · 사용 가이드 — 버프 · 스킬 · 보스 디버프 오버레이, 목표 금액, 스펙업 계산기">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>:root {
+  --ink: #1b2130; --muted: #5d6676; --line: #e3e6ec; --soft: #f5f7fa;
+  --accent: #f28a1e; --accent-ink: #b35d00; --blue: #3f6fe0; --ok: #1f8a4c; --warn: #b86a00;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: "Pretendard", sans-serif; color: var(--ink); font-size: 10.2pt; line-height: 1.6; word-break: keep-all; }
+.page { break-after: page; }
+.page:last-child { break-after: auto; }
+
+h1 { font-size: 21pt; font-weight: 800; margin: 0 0 4mm; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
+h1 .no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: #fff; font-size: 15pt; }
+h3 { font-size: 12.5pt; font-weight: 700; margin: 6mm 0 2mm; padding-left: 9px; border-left: 4px solid var(--accent); line-height: 1.3; break-after: avoid; }
+p { margin: 0 0 2.5mm; }
+.small { font-size: 9pt; color: var(--muted); }
+code { font-family: "Pretendard", monospace; background: #eef1f6; padding: 1px 5px; border-radius: 4px; font-size: 9.2pt; }
+kbd { display: inline-block; border: 1px solid #c9ced8; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: 8.8pt; background: #fff; font-family: inherit; line-height: 1.5; }
+b { font-weight: 700; }
+.g { color: var(--ok); font-weight: 700; } .o { color: #d9731a; font-weight: 700; }
+
+/* 표지 */
+.cover-page { break-after: page; }
+.cover { text-align: center; padding-top: 6mm; }
+.cover .logo { width: 30mm; height: 30mm; }
+.cover .kicker { margin-top: 5mm; font-weight: 700; color: var(--accent-ink); letter-spacing: 2px; font-size: 11pt; }
+.cover h1 { justify-content: center; font-size: 34pt; margin: 2mm 0 0; }
+.cover .ver { display: inline-block; margin-top: 3mm; background: var(--ink); color: #fff; font-weight: 700; border-radius: 99px; padding: 2px 16px; font-size: 13pt; }
+.cover .lead { font-size: 11.5pt; color: var(--muted); margin: 7mm auto 6mm; max-width: 150mm; line-height: 1.7; }
+.cover .note { font-size: 8.5pt; color: var(--muted); margin-top: 4mm; }
+.cover-shot .scene-fig { margin: 0; }
+
+/* 목차 */
+.toc-h { margin-top: 4mm; }
+.toc { list-style: none; padding: 0; margin: 4mm 0 8mm; }
+.toc li { display: flex; align-items: baseline; gap: 10px; padding: 2.6mm 0; border-bottom: 1px solid var(--line); font-size: 12pt; }
+.toc .tn { width: 26px; height: 26px; display: inline-grid; place-items: center; border-radius: 7px; background: #fff1e3; color: var(--accent-ink); font-weight: 800; font-size: 10.5pt; flex: none; }
+.toc .tt { font-weight: 600; }
+.toc .dots { flex: 1; }
+.toc .tp { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* 상자 */
+.callout { border-radius: 10px; padding: 3mm 4mm; margin: 4mm 0; font-size: 9.6pt; border: 1px solid; break-inside: avoid; }
+.callout > b:first-child { display: block; margin-bottom: 1mm; }
+.callout ul { margin: 1mm 0 0; padding-left: 5mm; }
+.callout.info { background: #eef4ff; border-color: #cfdcfb; }
+.callout.ok { background: #ecf8f0; border-color: #c6e8d2; }
+.callout.warn { background: #fff6ea; border-color: #f6d9b0; }
+
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin: 4mm 0; }
+.feat { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 3mm 3.5mm; }
+.feat h4 { margin: 0 0 1mm; font-size: 11pt; }
+.feat p { margin: 0; font-size: 9.2pt; color: var(--muted); }
+
+.flow { display: flex; align-items: stretch; gap: 2mm; margin: 3mm 0 4mm; }
+.flow > div { flex: 1; background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 2.5mm 3mm; text-align: center; }
+.flow > div.hl { background: #fff1e3; border-color: #f6cfa3; flex: 1.5; }
+.flow b { display: block; font-size: 10pt; }
+.flow span { font-size: 8.6pt; color: var(--muted); }
+.flow i { align-self: center; font-style: normal; color: var(--accent); font-weight: 800; }
+
+table { border-collapse: collapse; width: 100%; break-inside: avoid; }
+table.req th, table.kv th { text-align: left; white-space: nowrap; padding: 2mm 4mm 2mm 0; vertical-align: top; color: var(--muted); font-weight: 600; width: 28mm; }
+table.req td, table.kv td { padding: 2mm 0; }
+table.req tr, table.kv tr { border-bottom: 1px solid var(--line); }
+table.kv.wide th { width: 45mm; }
+table.grid { margin: 2mm 0 4mm; font-size: 9.4pt; }
+table.grid th { background: var(--soft); text-align: left; padding: 2mm 3mm; border-bottom: 2px solid var(--line); font-weight: 700; }
+table.grid td { padding: 2mm 3mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.trouble td:first-child { width: 52mm; font-weight: 600; }
+table.trouble { break-inside: auto; } table.trouble tr { break-inside: avoid; }
+
+ul.steps, ol.steps { padding-left: 5mm; margin: 2mm 0 3mm; }
+ul.steps li, ol.steps li { margin-bottom: 1.5mm; }
+
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
+
+/* 앱 화면 + 번호 */
+figure { margin: 3mm 0; break-inside: avoid; }
+figure.shot { margin-left: auto; margin-right: auto; }
+.frame { position: relative; border-radius: 10px; overflow: visible; box-shadow: 0 4px 18px rgba(20, 30, 50, .18), 0 0 0 1px rgba(20, 30, 50, .12); }
+.frame img { display: block; width: 100%; border-radius: 10px; }
+.mbox { position: absolute; border: 2px solid var(--accent); border-radius: 6px; box-shadow: 0 0 0 2px rgba(242, 138, 30, .25); }
+.badge { position: absolute; transform: translate(-55%, -55%); min-width: 19px; height: 19px; padding: 0 4px; border-radius: 99px; background: var(--accent);
+         color: #fff; font-weight: 800; font-size: 8.4pt; display: grid; place-items: center; line-height: 1; box-shadow: 0 0 0 2px #fff, 0 2px 4px rgba(0, 0, 0, .3); z-index: 5; }
+.badge.abs { transform: none; }
+figcaption { text-align: center; font-size: 8.8pt; color: var(--muted); margin-top: 2mm; }
+ol.legend { list-style: none; padding: 0; margin: 2mm 0 4mm; columns: 2; column-gap: 6mm; font-size: 9.1pt; }
+ol.legend li { display: flex; gap: 6px; break-inside: avoid; margin-bottom: 1.6mm; line-height: 1.45; }
+ol.legend .n { flex: none; min-width: 18px; height: 18px; border-radius: 99px; background: var(--accent); color: #fff; font-size: 8pt; display: grid; place-items: center; margin-top: 1px; padding: 0 3px; }
+
+/* 게임 장면 */
+.scene-fig { margin: 3mm 0; }
+.scene { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #1b2232; box-shadow: 0 4px 18px rgba(20, 30, 50, .25); }
+.scene .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.scene .tag { position: absolute; right: 1.2%; bottom: 1.6%; font-size: max(5pt, 1.1cqw); color: rgba(255, 255, 255, .55); background: rgba(0, 0, 0, .35); padding: 1px 6px; border-radius: 99px; z-index: 9; }
+.at { position: absolute; }
+.at img { display: block; }
+.at.panel img { border-radius: 4px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .1); }
+.at.dim { height: 100%; background: rgba(0, 0, 0, .45); z-index: 2; }
+.at.clear { z-index: 3; }
+.at.drag { border: 2px solid #ff3c3c; z-index: 4; }
+.at.rowbox { border: 1px solid #00ff00; z-index: 4; }
+.at.hint { z-index: 5; background: rgba(0, 0, 0, .7); color: #fff; font-weight: 700; font-size: 1.25cqw; padding: .6% 1%; }
+.at.badge.sc { position: absolute; transform: none; z-index: 6; }
+.at.win { z-index: 7; box-shadow: 0 6px 20px rgba(0, 0, 0, .5); border-radius: 6px; overflow: hidden; }
+.scene.edge-mp::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 40px 14px rgba(60, 110, 255, .65); z-index: 8; pointer-events: none; }
+
+.scene { container-type: inline-size; }
+.bossbar { font-size: 1cqw; }
+.bossbar .debuffs { display: flex; gap: .5cqw; margin-bottom: .5cqw; padding-left: .3cqw; }
+.bossbar .debuffs span { position: relative; }
+.bossbar .debuffs img { width: 3cqw; height: 3cqw; image-rendering: pixelated; display: block; border: 1px solid #000; }
+.bossbar .debuffs i { position: absolute; left: 0; right: 0; bottom: -1.7cqw; text-align: center; font-style: normal; color: #fff; font-size: .95cqw; text-shadow: 0 0 2px #000; }
+.bossbar .hp { position: relative; height: 2.4cqw; background: #2a0d0d; border: 1px solid #000; margin-top: 1.7cqw; }
+.bossbar .hp .fill { position: absolute; inset: 0 26% 0 0; background: linear-gradient(#e44, #a11); }
+.bossbar .hp b, .bossbar .hp em { position: absolute; top: 0; color: #fff; font-size: 1.2cqw; line-height: 2.4cqw; font-style: normal; text-shadow: 0 0 2px #000; }
+.bossbar .hp b { left: 1cqw; } .bossbar .hp em { right: 1cqw; }
+.zoom2 .debuffs img { width: 5.5cqw; height: 5.5cqw; } .zoom2 .debuffs i { font-size: 1.5cqw; bottom: -2.4cqw; }
+.zoom2 .hp { height: 3.8cqw; margin-top: 2.8cqw; } .zoom2 .hp b, .zoom2 .hp em { font-size: 1.7cqw; line-height: 3.8cqw; }
+.resbars .r { height: 1.4cqw; background: #111; border: 1px solid #000; margin-bottom: .5cqw; position: relative; }
+.resbars .r i { position: absolute; inset: 0 auto 0 0; }
+.resbars .hp i { background: #d23b3b; } .resbars .mp i { background: #3561d6; } .resbars .sp i { background: #d9aa2e; }
+
+/* 경매장 창 (그림) */
+.awin { background: #1d1a17; border: 1px solid #6b5a42; border-radius: 4px; color: #e9dcc4; font-size: 1.3cqw; padding-bottom: 4%; }
+.awin .atitle { padding: 3% 3%; font-weight: 700; font-size: 1.5cqw; border-bottom: 1px solid #4a3f30; }
+.awin .scale { color: #e2b55a; }
+.awin .abal { margin: 3% 3% 2%; text-align: right; }
+.awin .abal b { background: #0e0c0a; padding: 2px 8px; border: 1px solid #4a3f30; }
+.awin .alist { margin: 0 3%; } .awin .alist div { height: 2.6cqw; border-bottom: 1px solid #2f2820; }
+
+/* 탐색기 · 경고 · 트레이 (그림) */
+.mock { border-radius: 10px; overflow: hidden; box-shadow: 0 4px 16px rgba(20, 30, 50, .15), 0 0 0 1px rgba(20, 30, 50, .12); margin: 3mm 0; break-inside: avoid; }
+.explorer { background: #fff; }
+.explorer .bar { background: #f3f4f7; padding: 2mm 4mm; font-size: 9pt; border-bottom: 1px solid var(--line); }
+.explorer .row { display: grid; grid-template-columns: 22px 38mm 32mm 1fr; gap: 3mm; align-items: center; padding: 1.8mm 4mm; font-size: 9.4pt; border-bottom: 1px solid #f0f1f4; }
+.explorer .row em { color: var(--muted); font-style: normal; font-size: 8.6pt; }
+.explorer .row small { color: var(--accent-ink); font-size: 8.6pt; }
+.explorer .row.hl { background: #fff4e6; font-weight: 700; }
+.explorer .row.dim { color: #8a919d; }
+.explorer .ic { width: 18px; height: 16px; border-radius: 3px; }
+.explorer .ic.folder { background: #f5c451; } .explorer .ic.file { background: #dfe3ea; }
+.explorer .ic.exe img { width: 18px; height: 18px; }
+.smartscreen { position: relative; background: #1460c4; color: #fff; padding: 5mm; min-height: 46mm; }
+.smartscreen h5 { margin: 0 0 3mm; font-size: 14pt; font-weight: 600; }
+.smartscreen p { font-size: 8.6pt; opacity: .95; }
+.smartscreen .hot { text-decoration: underline; font-weight: 700; outline: 2px solid var(--accent); outline-offset: 2px; font-size: 9pt; }
+.smartscreen .btns { position: absolute; right: 4mm; bottom: 4mm; display: flex; gap: 2mm; }
+.smartscreen .btns span { border: 1px solid #fff; padding: 1mm 4mm; font-size: 8.6pt; }
+.smartscreen .btns .hot2 { outline: 2px solid var(--accent); outline-offset: 2px; background: #2b74d6; }
+.tray { background: linear-gradient(#30405c, #1d2639); position: relative; height: 92mm; }
+.tray .menu { position: absolute; right: 18mm; bottom: 12mm; width: 52mm; background: #2b2b2b; color: #eee; font-size: 8.6pt; padding: 1.5mm 0; border: 1px solid #444; box-shadow: 0 6px 18px rgba(0, 0, 0, .5); }
+.tray .menu .it { padding: 1.1mm 5mm; } .tray .menu .it.b { font-weight: 700; }
+.tray .menu hr { border: 0; border-top: 1px solid #444; margin: 1mm 0; }
+.tray .menu .it.sub { position: relative; }
+.tray .taskbar { position: absolute; left: 0; right: 0; bottom: 0; height: 10mm; background: #202020; display: flex; justify-content: flex-end; align-items: center; gap: 3mm; padding-right: 3mm; color: #ddd; font-size: 8pt; }
+.tray .taskbar img { width: 18px; height: 18px; outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.tray .clock { text-align: right; font-size: 7pt; line-height: 1.25; }
+.inline-ic { width: 15px; height: 15px; vertical-align: -3px; border-radius: 3px; }
+
+.chip { display: inline-block; padding: 0 8px; border-radius: 99px; font-size: 8.6pt; color: #fff; font-weight: 700; }
+.chip.red { background: #e04e4e; } .chip.orange { background: #e6a332; } .chip.gray { background: #5f6676; } .chip.green { background: #4aa66a; }
+
+.quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin: 3mm 0; }
+.quick > div { border: 1px solid var(--line); border-radius: 10px; padding: 3mm; background: #fff; position: relative; }
+.quick > div > b { position: absolute; top: -3mm; left: 3mm; background: var(--accent); color: #fff; width: 22px; height: 22px; border-radius: 99px; display: grid; place-items: center; font-size: 9.5pt; }
+.quick h4 { margin: 1mm 0 1mm; font-size: 10.5pt; }
+.quick p { font-size: 8.9pt; margin: 0; color: #333a48; }
+
+.endcard { display: flex; align-items: center; gap: 4mm; margin-top: 12mm; padding: 5mm; border-radius: 12px; background: var(--soft); border: 1px solid var(--line); }
+.endcard img { width: 16mm; height: 16mm; }
+.endcard span { color: var(--muted); }
+
+.menubar { display: flex; gap: .45cqw; background: rgba(10, 12, 18, .85); border: 1px solid #000; padding: .5cqw; border-radius: .4cqw; }
+.menubar i { flex: 1; height: 1.6cqw; background: linear-gradient(#5b6478, #343a48); border-radius: .3cqw; }
+
+:root { --side: 268px; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+body { font-size: 15px; line-height: 1.7; background: #fff; }
+.topbar { display: none; }
+.side { position: fixed; inset: 0 auto 0 0; width: var(--side); overflow-y: auto; border-right: 1px solid var(--line); background: #fbfcfd; padding: 20px 14px 40px; }
+.side .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; margin: 0 6px 16px; color: var(--ink); text-decoration: none; }
+.side .brand img { width: 30px; height: 30px; border-radius: 7px; }
+.side .brand small { color: var(--muted); font-weight: 600; }
+.side ol { list-style: none; margin: 0; padding: 0; }
+.side > ol > li > a { display: flex; gap: 8px; padding: 6px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 14px; }
+.side > ol > li > a b { color: var(--accent-ink); min-width: 18px; }
+.side a:hover { background: #f1f3f7; }
+.side a.on { background: #fff1e3; }
+.side ul { list-style: none; margin: 0 0 4px 26px; padding: 0; display: none; }
+.side li.open ul { display: block; }
+.side ul a { display: block; padding: 3px 8px; font-size: 13px; color: var(--muted); text-decoration: none; border-radius: 6px; }
+.side .dl { display: block; margin: 18px 6px 0; text-align: center; }
+.wrap { margin-left: var(--side); }
+.content { max-width: 920px; margin: 0 auto; padding: 32px 36px 80px; }
+.chap { padding-top: 28px; margin-top: 28px; border-top: 1px solid var(--line); }
+.chap:first-of-type { border-top: 0; }
+h1 { font-size: 30px; } h3 { font-size: 19px; margin-top: 30px; }
+.hero { display: flex; gap: 24px; align-items: center; }
+.hero .logo { width: 104px; height: 104px; flex: none; }
+.hero .kicker { font-weight: 700; color: var(--accent-ink); letter-spacing: 2px; font-size: 13px; }
+.hero .ht { font-size: 34px; margin: 2px 0 6px; display: block; }
+.hero .ver { font-size: 15px; background: var(--ink); color: #fff; border-radius: 99px; padding: 2px 12px; vertical-align: middle; }
+.hero .lead { color: var(--muted); margin: 0 0 14px; }
+.cta { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 8px 16px; border-radius: 10px; border: 1px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 14px; background: #fff; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn:hover { filter: brightness(.97); }
+.hero-shot { margin: 22px 0 8px; }
+.callout { font-size: 14.5px; } table.grid, ol.legend { font-size: 14px; }
+.badge { min-width: 22px; height: 22px; font-size: 12px; }
+ol.legend .n { min-width: 21px; height: 21px; font-size: 11.5px; }
+.frame img, .scene { cursor: zoom-in; }
+figure.shot { max-width: 100%; }
+.zoom { position: fixed; inset: 0; background: rgba(10, 14, 22, .88); display: none; align-items: center; justify-content: center; z-index: 50; cursor: zoom-out; padding: 2vw; }
+.zoom.on { display: flex; }
+.zoom .frame { box-shadow: none; flex: none; }
+.zoom .scene { flex: none; cursor: zoom-out; }
+.zoom .frame img { cursor: zoom-out; }
+footer.end { margin-top: 40px; color: var(--muted); font-size: 13px; }
+@media (max-width: 900px) {
+  html { scroll-padding-top: 64px; }
+  .side { transform: translateX(-100%); transition: transform .2s; z-index: 40; box-shadow: 0 0 30px rgba(0,0,0,.2); }
+  body.nav .side { transform: none; }
+  .wrap { margin-left: 0; }
+  .topbar { display: flex; position: sticky; top: 0; z-index: 30; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(255,255,255,.95); border-bottom: 1px solid var(--line); backdrop-filter: blur(6px); }
+  .topbar button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 4px 10px; font-size: 18px; }
+  .topbar img { width: 24px; height: 24px; border-radius: 5px; }
+  .content { padding: 18px 16px 60px; }
+  .hero { flex-direction: column; align-items: flex-start; } .hero .logo { width: 72px; height: 72px; }
+  .hero .ht { font-size: 26px; } h1 { font-size: 24px; }
+  .two, .grid3, .quick { grid-template-columns: 1fr; }
+  ol.legend { columns: 1; }
+  .flow { flex-direction: column; } .flow i { transform: rotate(90deg); }
+  figure.shot { width: 100% !important; }
+  table.req th, table.kv th { width: auto; white-space: normal; }
+  .explorer .row { grid-template-columns: 22px 1fr; } .explorer .row em, .explorer .row small { grid-column: 2; }
+}
+</style></head>
+<body>
+<div class="topbar"><button aria-label="목차">☰</button><img src="img/icon.png" alt=""><b>마비오라 가이드</b></div>
+<nav class="side"><a class="brand" href="#top"><img src="img/icon.png" alt="">마비오라 <small>v2.0.2</small></a>
+<ol><li><a href="#intro"><b>1</b>마비오라는 무엇인가요</a><ul><li><a href="#intro-1">어떻게 동작하나요</a></li><li><a href="#intro-2">켜기 / 끄기 개념</a></li></ul></li><li><a href="#install"><b>2</b>설치하기</a><ul><li><a href="#install-1">준비물</a></li><li><a href="#install-2">1단계 — 압축 파일 받기</a></li><li><a href="#install-3">2단계 — 폴더째 압축 풀기</a></li><li><a href="#install-4">3단계 — 처음 실행 (Windows 보안 경고)</a></li><li><a href="#install-5">4단계 — 실행 확인</a></li><li><a href="#install-6">업데이트 · 삭제</a></li></ul></li><li><a href="#game"><b>3</b>게임 쪽 준비</a><ul><li><a href="#game-1">영역을 잡기 좋은 순간</a></li></ul></li><li><a href="#quick"><b>4</b>처음 10분 — 빠른 시작</a></li><li><a href="#home"><b>5</b>홈 화면과 트레이 아이콘</a><ul><li><a href="#home-1">트레이 아이콘</a></li><li><a href="#home-2">캐릭터를 여러 개 쓸 때</a></li></ul></li><li><a href="#buffs"><b>6</b>버프 감시 (상태창)</a><ul><li><a href="#buffs-1">6-1. 상태창 영역 설정</a></li><li><a href="#buffs-2">6-2. 감시 항목</a></li><li><a href="#buffs-3">6-3. 결과 — 버프 카드와 알림</a></li><li><a href="#buffs-4">6-4. 이름 뒤에 붙는 글자 (연장)</a></li></ul></li><li><a href="#skills"><b>7</b>스킬 표시</a></li><li><a href="#boss"><b>8</b>보스 디버프</a><ul><li><a href="#boss-1">보스 디버프 동작 규칙</a></li><li><a href="#boss-2">추천 설정 예</a></li></ul></li><li><a href="#resource"><b>9</b>자원 알림 · 투아림</a><ul><li><a href="#resource-1">9-1. 생명력 · 마나 · 스태미나</a></li><li><a href="#resource-2">9-2. 투아림 (도르카)</a></li></ul></li><li><a href="#layout"><b>10</b>배치 편집</a></li><li><a href="#goal"><b>11</b>목표 금액 (경매장 시세 · 은행 잔고)</a><ul><li><a href="#goal-1">11-1. 넥슨 Open API 키 받기 (시세용, 무료)</a></li><li><a href="#goal-2">11-2. 은행 잔고 읽기 (선택)</a></li><li><a href="#goal-3">11-3. 목록 만들기</a></li><li><a href="#goal-4">11-4. 옵션 조건 쓰는 법</a></li><li><a href="#goal-5">11-5. 오버레이</a></li></ul></li><li><a href="#specup"><b>12</b>스펙업 계산기</a><ul><li><a href="#specup-1">12-1. 내 스펙 — 무엇을 넣나요</a></li><li><a href="#specup-2">12-2. 장비 입력 요령</a></li><li><a href="#specup-3">12-4. 항목별 효율 — "어디를 올릴까"</a></li><li><a href="#specup-4">12-5. 추천 순위 — "무엇부터 살까"</a></li><li><a href="#specup-5">12-6. 매물 찾기 — "경매장 매물로 바꾸면"</a></li></ul></li><li><a href="#settings"><b>13</b>일반 설정 · 소리 · 가챠 덮개</a><ul><li><a href="#settings-1">소리 정리</a></li><li><a href="#settings-2">가챠 덮개</a></li></ul></li><li><a href="#trouble"><b>14</b>문제 해결</a></li><li><a href="#files"><b>15</b>파일 위치 · 업데이트 · 진단 보내기</a><ul><li><a href="#files-1">문제를 알릴 때 보내 주면 좋은 것</a></li></ul></li></ol><a class="btn dl" href="MabiAura_v2.0.2_guide.pdf" download>PDF 받기</a></nav>
+<div class="wrap"><main class="content" id="top">
+<header class="hero">
+  <img class="logo" src="img/icon.png" alt="">
+  <div>
+    <div class="kicker">MabiAura · 마비오라</div>
+    <h1 class="ht">설치 · 사용 가이드 <span class="ver">v2.0.2</span></h1>
+    <p class="lead">마비노기 화면을 <b>보기만</b> 해서 버프 · 스킬 · 보스 디버프를 크게 띄우고 알려 주는 도우미, 그리고 경매장 시세로 목표 금액과 스펙업 순서를 계산해 주는 도구입니다.</p>
+    <div class="cta"><a class="btn primary" href="#install">설치하러 가기</a><a class="btn" href="#quick">빠른 시작</a>
+    <a class="btn" href="MabiAura_v2.0.2_guide.pdf" download>PDF 받기</a></div>
+  </div>
+</header>
+<div class="hero-shot"><figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at " style="left:1.04%;top:1.85%;width:27.92%;"><img src="img/scene_skill.png" style="width:100%"></div><div class="at panel" style="left:79.69%;top:5.56%;width:18.75%;"><img src="img/scene_status.png" style="width:100%"></div><div class="at " style="left:29.17%;top:74.07%;width:41.67%;"><div class="bossbar"><div class="debuffs"><span><img src="img/bi_mulbo.png"><i>2M</i></span><span><img src="img/bi_demj.png"><i>48</i></span><span><img src="img/bi_dema.png"><i>31</i></span><span><img src="img/bi_yaong.png"><i>4M</i></span></div><div class="hp"><div class="fill"></div><b>보스 이름</b><em>73.4%</em></div></div></div><div class="at " style="left:19.79%;top:87.96%;width:15.62%;"><div class="resbars"><div class="r hp"><i style="width:82%"></i></div><div class="r mp"><i style="width:18%"></i></div><div class="r sp"><i style="width:96%"></i></div></div></div><div class="at " style="left:36.46%;top:91.20%;width:27.08%;"><div class="menubar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="at " style="left:2.08%;top:23.15%;width:24.65%;"><img src="img/ov_goal.png" style="width:100%"></div><div class="at " style="left:2.08%;top:44.44%;width:18.12%;"><img src="img/ov_buff.png" style="width:100%"></div><div class="at " style="left:37.50%;top:21.30%;width:26.25%;"><img src="img/ov_toast.png" style="width:100%"></div><div class="at " style="left:58.33%;top:56.48%;width:18.12%;"><img src="img/ov_boss.png" style="width:100%"></div><div class="at " style="left:39.58%;top:51.85%;width:17.33%;"><img src="img/ov_skill.png" style="width:100%"></div><div class="at " style="left:2.08%;top:79.63%;width:16.25%;"><img src="img/ov_res.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>이 문서의 화면 그림은 예시 데이터로 그린 것입니다. 실제 숫자 · 아이콘 · 위치는 사용자마다 다릅니다.</figcaption></figure></div>
+<section class="chap" id="intro">
+<h1><span class="no">1</span>마비오라는 무엇인가요</h1>
+<p>마비오라는 화면을 캡처해서 읽기만 하는 <b>트레이 프로그램</b>입니다. 게임 파일이나 메모리를 건드리지 않고, 키 입력을 대신 보내지도 않습니다.
+화면에 보이는 것을 읽어 <b>더 크게, 더 눈에 띄게</b> 다시 그려 주고, 필요할 때 소리로 알려 줍니다.</p>
+<div class="grid3">
+  <div class="feat"><h4>버프 감시</h4><p>상태창에 고정한 버프가 꺼지거나, 남은 시간이 줄면 카드 · 알림 · 음성으로 알려요.</p></div>
+  <div class="feat"><h4>스킬 표시</h4><p>스킬창 슬롯을 크게 띄워요. 항상 / 쿨타임 중에만 / 준비되면 흐리게.</p></div>
+  <div class="feat"><h4>보스 디버프</h4><p>보스 체력바 위 디버프 띠를 읽어 빠진 디버프를 목록으로, 버스트는 순간 알림으로.</p></div>
+  <div class="feat"><h4>자원 · 투아림</h4><p>생명력 · 마나 · 스태미나 부족, 도르카 · 투아림 시점 알림.</p></div>
+  <div class="feat"><h4>목표 금액</h4><p>살 물건의 경매장 시세와 은행 잔고를 비교해 "얼마 남았는지" 오버레이로.</p></div>
+  <div class="feat"><h4>스펙업 계산기</h4><p>내 스펙 · 장비 기준으로 무엇을 올리면 총딜이 몇 % 오르는지, 1억 당 효율 순위와 매물 찾기.</p></div>
+</div>
+<h3 id="intro-1">어떻게 동작하나요</h3>
+<div class="flow">
+  <div><b>① 화면 캡처</b><span>초당 5번 (설정 가능)</span></div><i>→</i>
+  <div><b>② 지정한 영역 읽기</b><span>상태창 · 스킬창 · 보스 바 · 자원 막대</span></div><i>→</i>
+  <div><b>③ 상태 판단</b><span>켜짐/꺼짐 · 남은 시간 · 쿨타임</span></div><i>→</i>
+  <div><b>④ 오버레이 · 소리</b><span>카드 · 알림창 · 음성</span></div>
+</div>
+<div class="callout ok"><b>안전하게 쓰는 법</b>
+<ul><li>오버레이는 기본으로 <b>스크린샷 · 방송 캡처에 찍히지 않습니다</b> (일반 설정에서 바꿀 수 있어요).</li>
+<li>마비오라가 하는 일은 "화면을 보고 알려 주기"까지입니다. 게임 조작은 항상 직접 하세요.</li>
+<li>스펙업 · 목표 금액은 화면 캡처와 상관없는 계산 도구라 게임이 꺼져 있어도 쓸 수 있습니다.</li></ul></div>
+<h3 id="intro-2">켜기 / 끄기 개념</h3>
+<p>마비오라에는 <b>마스터 스위치</b> 하나가 있습니다. 켜면 감시 · 알림 · 오버레이가 전부 동작하고, 끄면 트레이 아이콘만 남습니다.
+보통 <b>던전 들어갈 때 켜고, 나오면 끄는</b> 식으로 씁니다. 트레이 아이콘을 한 번 클릭하면 켜고/끄기가 바뀝니다.
+목표 금액 오버레이는 이 스위치와 따로 동작해요.</p>
+</section><section class="chap" id="install">
+<h1><span class="no">2</span>설치하기</h1>
+<h3 id="install-1">준비물</h3>
+<table class="req">
+<tr><th>운영체제</th><td>Windows 10 / 11 (64비트)</td></tr>
+<tr><th>파이썬</th><td><b>필요 없음</b> — 압축 안에 실행에 필요한 것이 다 들어 있어요</td></tr>
+<tr><th>화면</th><td>4K(3840×2160) 권장 · QHD도 UI 100%면 동작. 게임은 <b>창모드 전체화면</b></td></tr>
+<tr><th>인터넷</th><td>목표 금액 · 스펙업의 경매장 시세를 받을 때만 (넥슨 Open API 키 필요, 11장)</td></tr>
+</table>
+
+<h3 id="install-2">1단계 — 압축 파일 받기</h3>
+<p>배포처에서 <code>mabiaura-v2.0.2.zip</code> 을 받습니다. 브라우저가 "흔하지 않은 파일" 경고를 띄우면 <b>유지</b>를 눌러 저장하세요.</p>
+
+<h3 id="install-3">2단계 — 폴더째 압축 풀기</h3>
+<div class="mock explorer">
+  <div class="bar"><span>📁 내 PC › 로컬 디스크 (C:) › Games › <b>mabiaura</b></span></div>
+  <div class="rows">
+    <div class="row"><span class="ic folder"></span>_internal<em>파일 폴더</em><small>프로그램 부품 — 지우거나 옮기지 마세요</small></div>
+    <div class="row hl"><span class="ic exe"><img src="img/icon.png"></span>mabiaura.exe<em>응용 프로그램</em><small>← 이걸 실행</small></div>
+    <div class="row dim"><span class="ic folder"></span>profiles<em>처음 실행 후 생김</em><small>내 설정 (캐릭터 · 영역 · 감시 항목)</small></div>
+    <div class="row dim"><span class="ic folder"></span>diag<em>필요할 때 생김</em><small>진단용 화면 조각</small></div>
+    <div class="row dim"><span class="ic file"></span>mabiaura.log<em>처음 실행 후 생김</em><small>문제 생기면 보내 주실 파일</small></div>
+  </div>
+</div>
+<ul class="steps">
+<li>zip 을 오른쪽 클릭 → <b>모두 압축 풀기</b> → 위치를 <code>C:\Games\mabiaura</code> 처럼 <b>짧고 한글 없는 경로</b>로.</li>
+<li><code>바탕 화면</code> · <code>다운로드</code> 안에 그대로 두어도 되지만, OneDrive 동기화 폴더는 피하세요 (설정 저장이 늦어질 수 있어요).</li>
+<li><b>exe 하나만 따로 꺼내 옮기면 실행되지 않습니다.</b> 바로가기가 필요하면 exe 오른쪽 클릭 → <b>바로 가기 만들기</b>.</li>
+</ul>
+
+<h3 id="install-4">3단계 — 처음 실행 (Windows 보안 경고)</h3>
+<p>서명되지 않은 개인 제작 프로그램이라 처음 실행할 때 Windows 가 파란 경고 창을 띄울 수 있습니다.</p>
+<div class="two">
+  <div class="mock smartscreen"><h5>Windows의 PC 보호</h5><p>Microsoft Defender SmartScreen에서 인식할 수 없는 앱의 시작을 차단했습니다. …</p>
+    <a class="hot">추가 정보</a><div class="btns"><span>실행 안 함</span></div><span class="badge abs" style="left:4%;top:58%">1</span></div>
+  <div class="mock smartscreen"><h5>Windows의 PC 보호</h5><p>앱: mabiaura.exe<br>게시자: 알 수 없는 게시자</p>
+    <div class="btns"><span class="hot2">실행</span><span>실행 안 함</span></div><span class="badge abs" style="left:52%;top:70%">2</span></div>
+</div>
+<ol class="legend"><li><b class="n">1</b><span><b>추가 정보</b> 글자를 누릅니다.</span></li><li><b class="n">2</b><span>나타난 <b>실행</b> 버튼을 누릅니다. 한 번만 하면 다음부터는 안 물어요.</span></li></ol>
+<div class="callout warn"><b>백신이 exe 를 지우거나 막을 때</b> — 파이썬으로 만든 실행 파일(PyInstaller)에서 흔한 오탐입니다.
+백신의 <b>예외(허용) 목록</b>에 mabiaura 폴더를 추가한 뒤 다시 압축을 푸세요. 걱정되면 배포처의 해시값과 비교해 보세요.</div>
+
+<h3 id="install-5">4단계 — 실행 확인</h3>
+<p>실행하면 홈 창이 뜨고, 작업 표시줄 오른쪽 아래(시계 옆)에 <img class="inline-ic" src="img/icon.png"> 아이콘이 생깁니다.
+아이콘이 안 보이면 <b>^ (숨겨진 아이콘 표시)</b> 안에 있어요. 끌어서 작업 표시줄에 꺼내 두면 편합니다.</p>
+<figure class="shot" style="width:82%"><div class="frame"><img src="img/home_empty.png"><span class="mbox" style="left:83.93%;top:7.14%;width:12.95%;height:8.10%"></span><span class="badge" style="left:83.93%;top:7.14%">1</span></div><figcaption>처음 실행했을 때의 홈 화면</figcaption></figure><ol class="legend"><li><b class="n">1</b><span>처음엔 캐릭터가 없어요. <b>+ 캐릭터 추가</b>로 시작합니다 (4장).</span></li></ol>
+
+<h3 id="install-6">업데이트 · 삭제</h3>
+<ul class="steps">
+<li><b>업데이트</b>: 마비오라를 종료(트레이 우클릭 → 종료)하고, 새 zip 을 <b>같은 폴더에 덮어쓰기</b>로 풀면 됩니다. <code>profiles</code> 폴더(설정)는 그대로 남아요.</li>
+<li><b>설정 백업</b>: <code>profiles</code> 폴더만 복사해 두면 됩니다. 다른 PC 로 옮길 때도 이 폴더를 같은 자리에 넣으세요.</li>
+<li><b>삭제</b>: 종료한 뒤 mabiaura 폴더를 통째로 지우면 끝입니다. 레지스트리나 다른 곳에 남기는 것이 없어요.</li>
+</ul>
+</section><section class="chap" id="game">
+<h1><span class="no">3</span>게임 쪽 준비</h1>
+<p>마비오라는 화면의 글자 · 아이콘 모양으로 읽기 때문에 게임 설정이 맞아야 정확합니다. <b>한 번만</b> 맞춰 두면 됩니다.</p>
+<table class="req">
+<tr><th>화면 모드</th><td><b>창모드 전체화면</b> (테두리 없는 창). 전체화면(독점)은 캡처가 안 될 수 있어요.</td></tr>
+<tr><th>UI 크기</th><td>기본(변경 없음)을 권장. 4K 에서 UI 150% 를 쓰면 마비오라 <b>일반 설정 → UI 크기 변경</b>도 같은 것으로 (마비옛체/나눔고딕 구분).</td></tr>
+<tr><th>상태창</th><td>감시할 버프를 상태창에서 <b>고정(핀)</b> 해 두세요. 마비오라는 <b>고정된 버프 목록만</b> 읽습니다.</td></tr>
+<tr><th>창 위치</th><td><b>상태창 · 추가 스킬바 · 도르카(투아림)</b>는 게임에서 자유롭게 옮길 수 있어요. 원하는 자리에 둔 뒤 영역을 지정하고,
+나중에 옮겼다면 그 영역만 다시 지정하세요 (상태창은 <b>레이아웃 다시</b>, 스킬창은 <b>다시 지정</b>).
+보스 바(가운데 아래)와 자원 막대(메뉴 바 옆)는 자리가 정해져 있어요.</td></tr>
+<tr><th>윈도우 HDR</th><td>켜도 · 꺼도 됩니다. 마비오라가 자동으로 감지해요 (일반 설정 → 윈도우 HDR = 자동 감지).</td></tr>
+</table>
+<div class="callout info"><b>왜 고정한 버프만?</b> 고정하지 않은 버프는 켜지고 꺼질 때마다 줄 순서가 바뀌어서, 어느 줄이 어떤 버프인지 알 수 없기 때문이에요.
+고정 목록은 순서가 그대로라 "3번째 줄 = 투안의 노래" 처럼 기억할 수 있습니다.</div>
+<h3 id="game-1">영역을 잡기 좋은 순간</h3>
+<ul class="steps">
+<li><b>시간이 표시되는 버프 하나를 켜 둔 상태</b> — 마비오라가 시간 글자 위치까지 함께 배워요.</li>
+<li><b>어두운 곳</b> — 밝은 배경(눈밭, 하늘)에서는 꺼진 버프의 회색 글자를 배경과 구분하지 못해 일부 줄을 판정 못 할 수 있어요. 던전 안 · 밤 · 실내가 좋습니다.</li>
+<li>캐릭터가 한 자리에 가만히 있는 순간 (이펙트가 상태창을 덮지 않게).</li>
+</ul>
+</section><section class="chap" id="quick">
+<h1><span class="no">4</span>처음 10분 — 빠른 시작</h1>
+<p>버프 하나가 꺼졌을 때 화면에 카드가 뜨고 소리가 나게 하기까지의 순서입니다.</p>
+<div class="quick">
+  <div><b>1</b><h4>캐릭터 추가</h4><p>홈 오른쪽 위 <b>+ 캐릭터 추가</b> → 이름 입력 (아무거나). 캐릭터마다 상태창 구성이 달라서 따로 저장해요.</p></div>
+  <div><b>2</b><h4>상태창 영역 설정</h4><p>게임을 앞에 띄운 채 홈의 <b>상태창 → 영역 설정</b>. 화면이 어두워지면 상태창을 넉넉히 드래그 → 초록 상자가 줄마다 뜨면 <kbd>Enter</kbd>.</p></div>
+  <div><b>3</b><h4>레이아웃 확인</h4><p>저장하면 자동으로 줄 좌표를 잡아요. 캐릭터 카드에 <b>✓ 레이아웃 (N행)</b>이 보이면 성공.</p></div>
+  <div><b>4</b><h4>감시 항목</h4><p><b>감시 항목</b>에서 줄마다 이름을 적고 <b>감시</b>를 켭니다. <b>설정</b>에서 알림 방식 · 소리 · 화면에 크게 표시.</p></div>
+  <div><b>5</b><h4>배치 편집</h4><p>홈 아래 <b>배치 편집</b> → 게임 위 점선 상자를 원하는 자리로 끌고, 휠로 크기. <b>저장</b>.</p></div>
+  <div><b>6</b><h4>켜기</h4><p>홈 아래 스위치 또는 트레이 아이콘 클릭. <b>켜짐 — 감시 중</b>이면 끝!</p></div>
+</div>
+<div class="callout ok"><b>소리도 원하면</b> 일반 설정 → <b>소리 켜기</b>를 켜고, 감시 항목 카드의 <b>소리</b>를 "음성"으로 고르세요.
+기본은 모두 "소리 없음"이라 처음엔 조용합니다.</div>
+<figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at " style="left:1.04%;top:1.85%;width:27.92%;"><img src="img/scene_skill.png" style="width:100%"></div><div class="at panel" style="left:79.69%;top:5.56%;width:18.75%;"><img src="img/scene_status.png" style="width:100%"></div><div class="at " style="left:29.17%;top:74.07%;width:41.67%;"><div class="bossbar"><div class="debuffs"><span><img src="img/bi_mulbo.png"><i>2M</i></span><span><img src="img/bi_demj.png"><i>48</i></span><span><img src="img/bi_dema.png"><i>31</i></span><span><img src="img/bi_yaong.png"><i>4M</i></span></div><div class="hp"><div class="fill"></div><b>보스 이름</b><em>73.4%</em></div></div></div><div class="at " style="left:19.79%;top:87.96%;width:15.62%;"><div class="resbars"><div class="r hp"><i style="width:82%"></i></div><div class="r mp"><i style="width:18%"></i></div><div class="r sp"><i style="width:96%"></i></div></div></div><div class="at " style="left:36.46%;top:91.20%;width:27.08%;"><div class="menubar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="at " style="left:2.08%;top:23.15%;width:24.65%;"><img src="img/ov_goal.png" style="width:100%"></div><div class="at " style="left:2.08%;top:44.44%;width:18.12%;"><img src="img/ov_buff.png" style="width:100%"></div><div class="at " style="left:37.50%;top:21.30%;width:26.25%;"><img src="img/ov_toast.png" style="width:100%"></div><div class="at " style="left:58.33%;top:56.48%;width:18.12%;"><img src="img/ov_boss.png" style="width:100%"></div><div class="at " style="left:39.58%;top:51.85%;width:17.33%;"><img src="img/ov_skill.png" style="width:100%"></div><div class="at " style="left:2.08%;top:79.63%;width:16.25%;"><img src="img/ov_res.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>켜진 상태의 예: 게임 스킬창(왼쪽 위) · 상태창(오른쪽) · 보스 바(가운데 아래) · 자원 막대(메뉴 바 옆) 위에, 마비오라가 목표 금액 · 버프 카드 · 알림 · 빠진 디버프 · 확대 스킬 아이콘 · 마나 부족을 띄운 모습</figcaption></figure>
+</section><section class="chap" id="home">
+<h1><span class="no">5</span>홈 화면과 트레이 아이콘</h1>
+<p>모든 설정은 홈에서 시작합니다. 캐릭터마다 카드가 하나씩 있고, 카드 안에서 그 캐릭터의 영역 · 감시 · 알림을 설정해요.</p>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/home.png"><span class="mbox" style="left:85.00%;top:3.95%;width:12.08%;height:4.47%"></span><span class="badge" style="left:85.00%;top:3.95%">1</span><span class="badge" style="left:22.29%;top:15.13%">2</span><span class="mbox" style="left:10.94%;top:24.08%;width:8.23%;height:4.21%"></span><span class="badge" style="left:10.94%;top:24.08%">3</span><span class="mbox" style="left:20.00%;top:24.08%;width:8.23%;height:4.21%"></span><span class="badge" style="left:20.00%;top:24.08%">4</span><span class="mbox" style="left:29.06%;top:24.08%;width:10.52%;height:4.21%"></span><span class="badge" style="left:29.06%;top:24.08%">5</span><span class="mbox" style="left:10.94%;top:29.34%;width:8.33%;height:4.21%"></span><span class="badge" style="left:10.94%;top:29.34%">6</span><span class="mbox" style="left:10.94%;top:34.61%;width:9.38%;height:4.21%"></span><span class="badge" style="left:10.94%;top:34.61%">7</span><span class="mbox" style="left:10.94%;top:39.87%;width:8.23%;height:4.21%"></span><span class="badge" style="left:10.94%;top:39.87%">8</span><span class="mbox" style="left:73.02%;top:54.08%;width:12.08%;height:4.21%"></span><span class="badge" style="left:73.02%;top:54.08%">9</span><span class="mbox" style="left:2.92%;top:90.26%;width:14.17%;height:3.68%"></span><span class="badge" style="left:2.92%;top:90.26%">10</span><span class="mbox" style="left:55.00%;top:90.00%;width:8.23%;height:4.21%"></span><span class="badge" style="left:55.00%;top:90.00%">11</span><span class="mbox" style="left:63.85%;top:90.00%;width:6.67%;height:4.21%"></span><span class="badge" style="left:63.85%;top:90.00%">12</span><span class="mbox" style="left:71.15%;top:90.00%;width:8.23%;height:4.21%"></span><span class="badge" style="left:71.15%;top:90.00%">13</span><span class="mbox" style="left:80.00%;top:90.00%;width:8.23%;height:4.21%"></span><span class="badge" style="left:80.00%;top:90.00%">14</span><span class="mbox" style="left:88.85%;top:90.00%;width:8.23%;height:4.21%"></span><span class="badge" style="left:88.85%;top:90.00%">15</span></div><figcaption>홈 화면 (설정을 마친 캐릭터와 아직 안 한 캐릭터)</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>+ 캐릭터 추가</b> — 새 캐릭터 카드를 만듭니다.</span></li><li><b class="n">2</b><span><b>● 사용 중</b> — 지금 감시하는 캐릭터. 다른 캐릭터로 접속했다면 그 카드의 [이 캐릭터로 전환] (자동 인식은 없어요).</span></li><li><b class="n">3</b><span><b>상태창 영역 설정</b> — 상태창(고정 버프 목록) 위치를 드래그로 지정 (6장).</span></li><li><b class="n">4</b><span><b>감시 항목</b> — 줄마다 이름 · 알림 방식 · 소리.</span></li><li><b class="n">5</b><span><b>레이아웃 다시</b> — 상태창을 옮겼거나 고정 목록을 바꿨을 때. 어두운 곳에서.</span></li><li><b class="n">6</b><span><b>스킬창 영역 추가 / 스킬 표시</b> — 7장.</span></li><li><b class="n">7</b><span><b>보스 디버프</b> — 8장.</span></li><li><b class="n">8</b><span><b>자원 · 투아림</b> — 영역 지정 후 [알림 설정]. 오른쪽 회색 글자는 지금 읽은 값.</span></li><li><b class="n">9</b><span><b>이 캐릭터로 전환</b> — 다른 캐릭터로 바꿀 때.</span></li><li><b class="n">10</b><span><b>마스터 스위치</b> — 켜짐 = 감시 · 알림 · 오버레이 동작.</span></li><li><b class="n">11</b><span><b>가챠 덮개</b> — 13장.</span></li><li><b class="n">12</b><span><b>스펙업</b> — 12장.</span></li><li><b class="n">13</b><span><b>목표 금액</b> — 11장.</span></li><li><b class="n">14</b><span><b>배치 편집</b> — 10장.</span></li><li><b class="n">15</b><span><b>일반 설정</b> — 13장.</span></li></ol>
+<div class="callout info"><b>카드의 회색 안내 줄</b>을 보세요. "다음: [영역 설정] …", "설정 완료", "⚠ 밝은 곳에서 잡혀 …" 처럼 지금 해야 할 일을 알려 줍니다.</div>
+
+<h3 id="home-1">트레이 아이콘</h3>
+<div class="two">
+<div class="mock tray">
+  <div class="menu">
+    <div class="it b">켜기 (지금 꺼짐)</div><hr>
+    <div class="it">열기</div><div class="it">배치 편집</div><div class="it">감시 항목…</div><div class="it">스킬 표시…</div>
+    <div class="it">보스 디버프…</div><div class="it">스펙업…</div><div class="it">일반 설정…</div><div class="it sub">영역 설정 ▸</div>
+    <div class="it">레이아웃 다시 잡기</div><hr><div class="it">종료</div>
+  </div>
+  <div class="taskbar"><span>^</span><img src="img/icon.png"><span>🔊</span><span class="clock">오후 9:41<br>2026-10-18</span></div>
+</div>
+<div>
+<table class="kv">
+<tr><th>왼쪽 클릭</th><td>켜기 ↔ 끄기</td></tr>
+<tr><th>더블클릭</th><td>홈 창 열기</td></tr>
+<tr><th>오른쪽 클릭</th><td>메뉴 (왼쪽 그림)</td></tr>
+<tr><th>마우스 올리기</th><td>"마비오라 2.0.2" 버전 표시</td></tr>
+</table>
+<p class="small">홈 창의 X 를 눌러도 프로그램은 트레이에서 계속 실행됩니다. 완전히 끄려면 메뉴의 <b>종료</b>.</p>
+<p class="small"><b>단축키</b>(선택): 일반 설정에서 켜면 기본 <kbd>F9</kbd> 켜기/끄기, <kbd>F10</kbd> 홈, <kbd>Ctrl</kbd>+<kbd>F10</kbd> 배치 편집.
+키를 가로채지 않으니 게임에서 안 쓰는 키로 고르세요.</p>
+</div></div>
+
+<h3 id="home-2">캐릭터를 여러 개 쓸 때</h3>
+<ul class="steps">
+<li>캐릭터마다 상태창 · 스킬창 영역, 감시 항목, 보스 디버프 감시, 자원 · 투아림 알림이 따로 저장됩니다.</li>
+<li>보스 디버프 <b>아이콘 이름</b>은 모든 캐릭터가 함께 씁니다 (한 번 이름 붙이면 끝).</li>
+<li>오버레이 위치(배치 편집)는 공통입니다.</li>
+<li>다른 캐릭터로 접속했는데 전환을 잊으면 홈에 "⚠ 상태창 항목이 변경되었습니다"가 떠요. 맞는 캐릭터 카드에서 <b>이 캐릭터로 전환</b>.</li>
+</ul>
+</section><section class="chap" id="buffs">
+<h1><span class="no">6</span>버프 감시 (상태창)</h1>
+<h3 id="buffs-1">6-1. 상태창 영역 설정</h3>
+<p>홈 → 캐릭터 카드 → <b>상태창 · 영역 설정</b>을 누르면 게임 화면 위에 반투명한 막이 덮입니다.</p>
+<figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at dim" style="left:0.00%;top:0.00%;width:100.00%;"></div><div class="at panel clear" style="left:74.48%;top:6.48%;width:27.08%;"><img src="img/scene_status.png" style="width:100%"></div><div class="at drag" style="left:73.75%;top:5.37%;width:28.54%;height:51.85%;"></div><div class="at rowbox" style="left:74.64%;top:6.85%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:12.04%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:17.22%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:22.41%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:27.59%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:32.78%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:37.96%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:43.15%;width:26.67%;height:4.81%;"></div><div class="at rowbox" style="left:74.64%;top:48.33%;width:26.67%;height:4.81%;"></div><div class="at hint" style="left:1.04%;top:1.85%;width:72.92%;">행 9개 (고정 9개), 시간 글자까지 포함 — Enter 저장 / R 다시 / Esc 취소</div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>영역 설정 화면: 빨간 상자 = 드래그한 범위, 초록 상자 = 찾아낸 줄. 왼쪽 위에 결과 문구</figcaption></figure>
+<ol class="legend">
+<li><b class="n">1</b><span>상태창 고정 목록을 <b>넉넉하게</b> 감싸도록 드래그합니다. 좌우 폭은 자동으로 맞춰져요 (너무 넓게 잡으면 바깥 밝은 배경을 글자로 착각할 수 있으니 패널 폭 정도로).</span></li>
+<li><b class="n">2</b><span>줄마다 <b>초록 상자</b>가 생기고 위에 "행 N개 … 시간 글자까지 포함"이 뜨면 <kbd>Enter</kbd> 로 저장.</span></li>
+<li><b class="n">3</b><span>"⚠ 시간 글자가 안 보임"이면 시간이 표시되는 버프를 하나 켜고 <kbd>R</kbd> 로 다시. <kbd>Esc</kbd> = 취소.</span></li>
+<li><b class="n">4</b><span>"행 간격이 … UI 크기가 다릅니다"면 일반 설정의 <b>UI 크기 변경</b>을 게임과 같게 바꾸고 다시 하세요.</span></li>
+</ol>
+<div class="callout info">저장하면 마비오라가 줄 좌표(레이아웃)를 한 번 잡아 기억합니다. 이후에는 그 자리만 읽어서 가볍게 동작해요.
+홈 카드에 <b>✓ 레이아웃 (N행)</b> 이 보이면 성공입니다.</div>
+
+<h3 id="buffs-2">6-2. 감시 항목</h3>
+<p>홈 → <b>감시 항목</b>. 고정한 버프가 줄마다 <b>화면에서 잘라 온 그림</b>으로 보입니다. 감시할 줄을 켜고 이름을 붙이세요.</p>
+<figure class="shot" style="width:88%"><div class="frame"><img src="img/watches.png"><span class="mbox" style="left:48.02%;top:13.14%;width:30.00%;height:3.95%"></span><span class="badge" style="left:48.02%;top:13.14%">1</span><span class="mbox" style="left:79.65%;top:13.49%;width:8.02%;height:3.26%"></span><span class="badge" style="left:79.65%;top:13.49%">2</span><span class="mbox" style="left:89.30%;top:13.72%;width:4.53%;height:2.79%"></span><span class="badge" style="left:89.30%;top:13.72%">3</span><span class="mbox" style="left:5.23%;top:20.93%;width:88.60%;height:3.26%"></span><span class="badge" style="left:5.23%;top:20.93%">4</span><span class="mbox" style="left:5.23%;top:25.23%;width:18.26%;height:3.26%"></span><span class="badge" style="left:5.23%;top:25.23%">5</span><span class="mbox" style="left:5.23%;top:32.21%;width:13.95%;height:3.26%"></span><span class="badge" style="left:5.23%;top:32.21%">6</span><span class="mbox" style="left:5.23%;top:36.40%;width:15.35%;height:3.26%"></span><span class="badge" style="left:5.23%;top:36.40%">7</span><span class="mbox" style="left:9.07%;top:43.84%;width:11.16%;height:3.49%"></span><span class="badge" style="left:9.07%;top:43.84%">8</span><span class="mbox" style="left:88.84%;top:94.65%;width:7.91%;height:3.95%"></span><span class="badge" style="left:88.84%;top:94.65%">10</span></div><figcaption>감시 항목 창 — 첫 줄(마나실드)의 설정을 펼친 모습</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>이름</b> — 알림 · 카드에 쓸 이름. 비워 두면 '행 N'.</span></li><li><b class="n">2</b><span><b>감시</b> — 켜야 알림 · 표시 대상이 됩니다.</span></li><li><b class="n">3</b><span><b>설정</b> — 눌러서 아래 상세 설정을 펼칩니다.</span></li><li><b class="n">4</b><span><b>꺼지는 순간 알림</b> — 켜져 있다가 꺼질 때 1번.</span></li><li><b class="n">5</b><span><b>켜질 때까지 반복 알림</b> — 꺼진 지 N초 뒤부터 M초마다 '켜세요'. 마나실드처럼 꺼져 있으면 안 되는 버프에.</span></li><li><b class="n">6</b><span><b>남은 시간 알림</b> — '60,30' = 60초 · 30초 미만이 될 때. 연장된 버프는 따로 '120,60' 처럼.</span></li><li><b class="n">7</b><span><b>화면에 크게 표시</b> — 카드(또는 확대)로 띄움. 아이콘 · 이름 · 시간 · 활성일 때만 선택.</span></li><li><b class="n">8</b><span><b>소리</b> — 음성 / 효과음 / 소리 없음. 음성은 부를 이름을 따로 적을 수 있어요 ('실드' → "실드 꺼짐").</span></li><li><b class="n">9</b><span><b>크게 표시 방식</b> (창 아래쪽 '공통' 칸) — 카드(권장): 적은 이름 + 남은 시간을 새로 그림. 화면 그대로 확대: 게임 글자를 그대로 키움.</span></li><li><b class="n">10</b><span><b>저장</b> — 저장해야 적용됩니다.</span></li></ol>
+
+<h3 id="buffs-3">6-3. 결과 — 버프 카드와 알림</h3>
+<div class="two">
+<div><figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at " style="left:19.79%;top:18.52%;width:33.83%;"><img src="img/ov_buff.png" style="width:100%"></div><div class="at " style="left:62.50%;top:27.78%;width:35.00%;"><img src="img/ov_toast.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div></figure></div>
+<div><table class="kv">
+<tr><th><span class="chip red">빨강</span></th><td>꺼짐 · 30초 이하</td></tr>
+<tr><th><span class="chip orange">주황</span></th><td>60초 이하</td></tr>
+<tr><th><span class="chip gray">흰 글자</span></th><td>여유 있음</td></tr>
+<tr><th><span class="chip green">초록</span></th><td>시간 없는 버프가 켜져 있음</td></tr>
+</table></div></div>
+<ul class="steps">
+<li><b>버프 카드</b>: 고른 버프가 한 창에 세로로 쌓입니다. 아이콘만 화면에서 잘라 선명하게 키우고, 이름과 시간은 새로 그려서 작은 글꼴도 또렷해요.</li>
+<li><b>알림창</b>: "마나실드 꺼짐", "투안의 노래 30초" 같은 문구가 몇 초 동안 떴다가 사라집니다. 보스 버스트 · 자원 알림도 여기 같이 떠요.</li>
+<li>이펙트가 상태창 글자를 덮는 순간은 "모름"으로 두고 <b>추정 타이머</b>가 이어서 셉니다. 잠깐 가려져도 알림이 흔들리지 않아요.</li>
+<li>게임 창이 뒤로 가면(알트탭) 오버레이가 숨고 읽기도 쉽니다. 시간은 계속 흐르는 것으로 계산해요.</li>
+</ul>
+<h3 id="buffs-4">6-4. 이름 뒤에 붙는 글자 (연장)</h3>
+<p>"투안의 노래 (연장)"처럼 버프 이름 뒤에 글자가 붙는 경우 마비오라가 자동으로 모아 둡니다. 감시 항목의 해당 줄 설정에서
+<b>연장으로 취급</b>을 체크하면 그때는 '연장 중이면' 임계값(예: 120,60)을 씁니다. 같은 글자는 모든 버프에 공통 적용돼요.</p>
+</section><section class="chap" id="skills">
+<h1><span class="no">7</span>스킬 표시</h1>
+<p>스킬창(단축 슬롯) 아이콘을 원하는 자리에 크게 띄웁니다. 쿨타임이 도는 동안 아이콘 위가 어두워지는 모습까지 그대로 보여요.</p>
+<div class="two">
+<div><figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at dim" style="left:0.00%;top:0.00%;width:100.00%;"></div><div class="at clear" style="left:1.04%;top:11.11%;width:27.92%;"><img src="img/scene_skill.png" style="width:100%"></div><div class="at rowbox" style="left:1.35%;top:11.67%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:5.94%;top:11.67%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:10.52%;top:11.67%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:15.10%;top:11.67%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:19.69%;top:11.67%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:24.27%;top:11.67%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:1.35%;top:19.81%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:5.94%;top:19.81%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:10.52%;top:19.81%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:15.10%;top:19.81%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:19.69%;top:19.81%;width:4.17%;height:7.41%;"></div><div class="at rowbox" style="left:24.27%;top:19.81%;width:4.17%;height:7.41%;"></div><div class="at hint" style="left:1.04%;top:1.85%;width:72.92%;">슬롯 6x2 = 12개 — Enter 저장 / R 다시 / Esc 취소</div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>① 홈 → 스킬창 · 영역 추가: 스킬창(기본 왼쪽 위) 하나를 대충 감싸면 격자를 알아서 찾아요</figcaption></figure></div>
+<div><figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at " style="left:1.04%;top:1.85%;width:27.92%;"><img src="img/scene_skill.png" style="width:100%"></div><div class="at " style="left:36.46%;top:38.89%;width:32.00%;"><img src="img/ov_skill.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>③ 결과: 고른 슬롯이 크게 (항상 · 쿨중 · 흐림)</figcaption></figure></div>
+</div>
+<figure class="shot" style="width:88%"><div class="frame"><img src="img/skills.png"><span class="mbox" style="left:84.22%;top:16.92%;width:7.22%;height:4.62%"></span><span class="badge" style="left:84.22%;top:16.92%">1</span><span class="mbox" style="left:33.00%;top:34.81%;width:8.22%;height:4.62%"></span><span class="badge" style="left:33.00%;top:34.81%">2</span><span class="mbox" style="left:33.00%;top:39.81%;width:8.22%;height:5.77%"></span><span class="badge" style="left:33.00%;top:39.81%">3</span><span class="mbox" style="left:89.33%;top:91.15%;width:7.56%;height:6.54%"></span><span class="badge" style="left:89.33%;top:91.15%">4</span></div><figcaption>② 홈 → 스킬 표시</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>다시 지정</b> — 스킬창을 옮겼을 때. 고른 슬롯 설정은 그대로 남아요. 영역은 여러 개 추가할 수 있어요.</span></li><li><b class="n">2</b><span><b>체크</b> — 크게 띄울 슬롯.</span></li><li><b class="n">3</b><span><b>모드</b> — 항상: 늘 표시 · 쿨중: 쿨타임 중에만 · 흐림: 늘 표시하되 준비되면 흐리게.</span></li><li><b class="n">4</b><span><b>저장</b>. 위치 · 크기는 배치 편집에서.</span></li></ol>
+<div class="callout warn"><b>HDR 을 켠 경우</b> 캡처한 스킬 아이콘이 하얗게 날아가 보일 수 있어요. 일반 설정 → <b>HDR 스킬 아이콘 밝기</b>를 '강하게'로 올려 보세요.</div>
+</section><section class="chap" id="boss">
+<h1><span class="no">8</span>보스 디버프</h1>
+<p>보스 체력바 위의 <b>디버프 아이콘 띠</b>를 읽습니다. 우리 파티가 걸어 둬야 하는 디버프(모모 · 방깎 등) 중 <b>빠진 것</b>을 목록으로 띄우고,
+붕파 같은 <b>버스트</b>는 걸리는 순간 알림을 줍니다. 띠가 없는 옛 보스에서는 자동으로 쉬어요.</p>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/boss.png"><span class="mbox" style="left:1.92%;top:11.58%;width:96.16%;height:3.68%"></span><span class="badge" style="left:1.92%;top:11.58%">1</span><span class="mbox" style="left:6.92%;top:81.45%;width:10.27%;height:4.08%"></span><span class="badge" style="left:6.92%;top:81.45%">2</span><span class="mbox" style="left:22.95%;top:81.71%;width:9.59%;height:3.68%"></span><span class="badge" style="left:22.95%;top:81.71%">3</span><span class="mbox" style="left:37.05%;top:81.45%;width:5.48%;height:4.08%"></span><span class="badge" style="left:37.05%;top:81.45%">4</span><span class="mbox" style="left:46.71%;top:81.58%;width:6.58%;height:3.95%"></span><span class="badge" style="left:46.71%;top:81.58%">5</span><span class="mbox" style="left:55.14%;top:33.03%;width:10.41%;height:3.68%"></span><span class="badge" style="left:55.14%;top:33.03%">6</span><span class="mbox" style="left:65.96%;top:32.76%;width:10.96%;height:4.08%"></span><span class="badge" style="left:65.96%;top:32.76%">7</span><span class="mbox" style="left:18.01%;top:81.97%;width:4.11%;height:3.16%"></span><span class="badge" style="left:18.01%;top:81.97%">8</span></div><figcaption>홈 → 보스 디버프</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>이 캐릭터에서 보스 디버프 감시 사용</b> — 기능 전체 켜기/끄기.</span></li><li><b class="n">2</b><span><b>이름</b> — 아이콘 이름 (모든 캐릭터 공용). 같은 이름을 주면 한 항목으로 묶여요.</span></li><li><b class="n">3</b><span><b>감시 (빠지면 표시)</b> — 이 디버프가 빠지면 목록에 표시.</span></li><li><b class="n">4</b><span><b>재표시(초)</b> — '60,40,20' 이면 남은 시간이 그 이하로 떨어질 때 다시 표시(주황). 비우면 빠졌을 때만.</span></li><li><b class="n">5</b><span><b>빠짐 소리</b> — 음성이면 "모모 빠짐", "모모 20초".</span></li><li><b class="n">6</b><span><b>버스트</b> — 걸리는 순간 알림창에 문구. 감시 없이 버스트만 켜도 돼요 (지속 10초짜리에 적합).</span></li><li><b class="n">7</b><span><b>버스트 문구</b> — 비우면 '이름 적용!'.</span></li><li><b class="n">8</b><span><b>스택형</b> — 숫자만 바뀌는 변형(1~5 스택)을 같은 아이콘으로 봄.</span></li></ol>
+<figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at zoom2" style="left:23.96%;top:64.81%;width:52.08%;"><div class="bossbar"><div class="debuffs"><span><img src="img/bi_mulbo.png"><i>2M</i></span><span><img src="img/bi_demj.png"><i>48</i></span><span><img src="img/bi_dema.png"><i>31</i></span><span><img src="img/bi_yaong.png"><i>4M</i></span></div><div class="hp"><div class="fill"></div><b>보스 이름</b><em>73.4%</em></div></div></div><div class="at " style="left:19.79%;top:87.96%;width:15.62%;"><div class="resbars"><div class="r hp"><i style="width:82%"></i></div><div class="r mp"><i style="width:18%"></i></div><div class="r sp"><i style="width:96%"></i></div></div></div><div class="at " style="left:36.46%;top:91.20%;width:27.08%;"><div class="menubar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="at " style="left:61.46%;top:35.19%;width:26.58%;"><img src="img/ov_boss.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>화면 가운데 아래(메뉴 바 위)의 보스 바와 디버프 띠 → 감시 중인데 빠진 '모모'는 빨강 '빠짐', 곧 끝나는 '마보깎'은 주황 + 남은 초</figcaption></figure>
+<h3 id="boss-1">보스 디버프 동작 규칙</h3>
+<ul class="steps">
+<li>보스 바는 게임 화면 <b>가운데 아래(메뉴 바 바로 위)</b>에 고정이라 따로 영역을 지정할 필요가 없어요.</li>
+<li>목록은 <b>보스 바가 보이는 동안만</b> 표시됩니다. 감시 중인 디버프가 전부 걸려 있으면 아무것도 안 보여요 (= 잘 되고 있다는 뜻).</li>
+<li>보스마다 <b>첫 전투</b>에서는 첫 디버프가 걸린 뒤부터 동작하고, 그 보스를 기억해 두면 다음부터는 바가 뜨는 즉시 동작합니다.</li>
+<li>남은 시간이 분 단위(<code>4M</code>)로 보이는 동안은 초를 알 수 없어서, 재표시는 60초 이하로 내려온 뒤부터 동작해요.</li>
+<li>UI 150% 는 <b>마비옛체만</b> 지원합니다 (나눔고딕은 게임이 분 표시 'M' 을 그리지 않아 분 · 초를 구분할 수 없음).</li>
+<li>새 아이콘은 기본으로 자동 등록하지 않습니다. 목록에 없는 디버프가 있으면 진단 프레임과 함께 알려 주세요 (15장).</li>
+</ul>
+<h3 id="boss-2">추천 설정 예</h3>
+<table class="grid">
+<tr><th>디버프</th><th>감시</th><th>재표시</th><th>버스트</th><th>쓰임</th></tr>
+<tr><td>모모 · 방깎 · 마보깎 (오래 유지)</td><td>✓</td><td>60,30</td><td></td><td>빠지거나 30초 남으면 다시 걸기</td></tr>
+<tr><td>붕파 (짧은 극딜 창)</td><td></td><td></td><td>✓ "붕파! 극딜!"</td><td>걸리는 순간 몰아치기</td></tr>
+<tr><td>데마 · 뎀증</td><td>✓</td><td>20</td><td></td><td>끝나기 직전에만 알림</td></tr>
+</table>
+</section><section class="chap" id="resource">
+<h1><span class="no">9</span>자원 알림 · 투아림</h1>
+<h3 id="resource-1">9-1. 생명력 · 마나 · 스태미나</h3>
+<p>메뉴 바 옆 막대 세 줄의 <b>색이 찬 비율</b>로 남은 양을 잽니다 (숫자를 읽지 않아 해상도 · 글꼴과 무관).
+홈 카드의 <b>자원 · 영역 설정</b>에서 막대 세 줄을 감싸게 드래그하고 <kbd>Enter</kbd>, 그다음 <b>알림 설정</b>.</p>
+<figure class="shot" style="width:60%"><div class="frame"><img src="img/bars.png"><span class="mbox" style="left:6.43%;top:18.57%;width:16.57%;height:4.00%"></span><span class="badge" style="left:6.43%;top:18.57%">1</span><span class="mbox" style="left:24.14%;top:18.14%;width:10.86%;height:4.86%"></span><span class="badge" style="left:24.14%;top:18.14%">2</span><span class="mbox" style="left:44.29%;top:18.57%;width:9.86%;height:4.00%"></span><span class="badge" style="left:44.29%;top:18.57%">3</span><span class="mbox" style="left:55.29%;top:18.57%;width:13.57%;height:4.00%"></span><span class="badge" style="left:55.29%;top:18.57%">4</span><span class="mbox" style="left:70.00%;top:18.43%;width:14.29%;height:4.29%"></span><span class="badge" style="left:70.00%;top:18.43%">5</span><span class="mbox" style="left:24.14%;top:23.86%;width:69.43%;height:4.43%"></span><span class="badge" style="left:24.14%;top:23.86%">6</span><span class="mbox" style="left:6.43%;top:43.86%;width:87.14%;height:4.00%"></span><span class="badge" style="left:6.43%;top:43.86%">7</span><span class="mbox" style="left:4.00%;top:72.71%;width:54.29%;height:4.00%"></span><span class="badge" style="left:4.00%;top:72.71%">8</span></div><figcaption>홈 → 자원 · 알림 설정</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>켜기</b> — 생명력 / 마나 / 스태미나 따로.</span></li><li><b class="n">2</b><span><b>기준 %</b> — 이 아래로 1초 이상 머물면 알림. 기준보다 조금 위로 회복하면 해제.</span></li><li><b class="n">3</b><span><b>글씨</b> — 자원 알림 칸에 '마나 18%'.</span></li><li><b class="n">4</b><span><b>화면 효과</b> — 화면 가장자리가 자원 색으로 물듦. 기준의 절반 이하면 진하게.</span></li><li><b class="n">5</b><span><b>소리</b> — 생명력 음성은 다른 소리를 끊고 가장 먼저.</span></li><li><b class="n">6</b><span><b>알림 문구</b> — 비우면 '생명력 부족' 등.</span></li><li><b class="n">7</b><span><b>마나실드가 켜져 있을 때만 화면 효과</b> — 감시 항목에 마나실드가 있을 때.</span></li><li><b class="n">8</b><span><b>샘플 수집</b> — 문제 확인용. 평소엔 끄세요.</span></li></ol>
+<div class="two"><div><figure class="scene-fig"><div class="scene edge-mp"><img class="bg" src="img/scene_bg.png"><div class="at " style="left:29.17%;top:74.07%;width:41.67%;"><div class="bossbar"><div class="debuffs"><span><img src="img/bi_mulbo.png"><i>2M</i></span><span><img src="img/bi_demj.png"><i>48</i></span><span><img src="img/bi_dema.png"><i>31</i></span><span><img src="img/bi_yaong.png"><i>4M</i></span></div><div class="hp"><div class="fill"></div><b>보스 이름</b><em>73.4%</em></div></div></div><div class="at " style="left:19.79%;top:87.96%;width:15.62%;"><div class="resbars"><div class="r hp"><i style="width:82%"></i></div><div class="r mp"><i style="width:18%"></i></div><div class="r sp"><i style="width:96%"></i></div></div></div><div class="at " style="left:36.46%;top:91.20%;width:27.08%;"><div class="menubar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="at " style="left:3.12%;top:70.37%;width:21.67%;"><img src="img/ov_res.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>결과: '마나 18%' 글씨 + 가장자리 파란 빛</figcaption></figure></div>
+<div class="callout info" style="margin-top:3mm"><b>막대 위치</b> — 생명력 · 마나 · 스태미나 막대는 보스 바 아래, <b>메뉴 바 옆</b>에 있어요. 세 줄을 끝까지 감싸게 지정하세요.<br><br><b>화면 효과와 글씨는 따로</b> 체크해요. 둘 다 / 하나만 / 둘 다 끔 모두 가능합니다.
+화면 효과는 인식 영역(막대 · 상태창 등)은 비워 두고 칠해서, 효과 색 때문에 잘못 읽는 일이 없어요.</div></div>
+
+<h3 id="resource-2">9-2. 투아림 (도르카)</h3>
+<p>도르카 숫자와 부스트 %를 읽어 알려 줍니다. 부스트는 전투 600초면 100% (1% = 6초)라서, 남은 시간은 "전투가 계속 이어진다"는 가정의 예측이에요.
+홈 카드의 <b>투아림 · 영역 설정</b>에서 도르카 숫자와 % 를 감싸게 드래그 (두 자리 · 100% 가 돼도 잘리지 않게 조금 넉넉히).</p>
+<figure class="shot" style="width:78%"><div class="frame"><img src="img/tuarim.png"><span class="mbox" style="left:7.03%;top:20.18%;width:85.94%;height:5.00%"></span><span class="badge" style="left:7.03%;top:20.18%">1</span><span class="mbox" style="left:31.56%;top:26.96%;width:12.50%;height:6.07%"></span><span class="badge" style="left:31.56%;top:26.96%">2</span><span class="mbox" style="left:33.28%;top:34.82%;width:10.94%;height:6.07%"></span><span class="badge" style="left:33.28%;top:34.82%">3</span><span class="mbox" style="left:7.03%;top:42.68%;width:85.94%;height:5.00%"></span><span class="badge" style="left:7.03%;top:42.68%">4</span><span class="mbox" style="left:11.88%;top:49.64%;width:17.19%;height:5.36%"></span><span class="badge" style="left:11.88%;top:49.64%">5</span><span class="mbox" style="left:7.03%;top:65.89%;width:34.38%;height:5.00%"></span><span class="badge" style="left:7.03%;top:65.89%">6</span></div><figcaption>홈 → 투아림 · 알림 설정</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>투아림 알림 사용</b>.</span></li><li><b class="n">2</b><span><b>곧 투아림</b> — 부스트가 N% 이상이면 한 번 (옆에 '투아림 약 0:30 전' 계산).</span></li><li><b class="n">3</b><span><b>도르카 부족</b> — N개 이하로 떨어지면 한 번.</span></li><li><b class="n">4</b><span><b>투아림 발동 알림</b> — "투아림!".</span></li><li><b class="n">5</b><span><b>소리</b> — 음성: "투아림 30초 전", "도르카 부족".</span></li><li><b class="n">6</b><span><b>샘플 수집</b> — 지원하지 않는 UI 크기에서 안 읽힐 때 켜서 모아 보내 주세요.</span></li></ol>
+<div class="callout info">지원: UI 100% (모든 해상도), 4K UI 150% 마비옛체 · 나눔고딕. 홈 카드 오른쪽에 지금 읽은 값("도르카 9 · 부스트 72%")이 보이면 정상입니다.</div>
+</section><section class="chap" id="layout">
+<h1><span class="no">10</span>배치 편집</h1>
+<p>홈 아래 <b>배치 편집</b>(또는 트레이 메뉴 · <kbd>Ctrl</kbd>+<kbd>F10</kbd>)을 누르면 모든 오버레이가 <b>파란 점선 상자</b>로 바뀌고 작은 편집 창이 뜹니다.
+알림창에는 "(예시)" 문구가 계속 떠서 위치를 보기 쉬워요.</p>
+<figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at " style="left:1.04%;top:1.85%;width:27.92%;"><img src="img/scene_skill.png" style="width:100%"></div><div class="at panel" style="left:79.69%;top:5.56%;width:18.75%;"><img src="img/scene_status.png" style="width:100%"></div><div class="at " style="left:29.17%;top:74.07%;width:41.67%;"><div class="bossbar"><div class="debuffs"><span><img src="img/bi_mulbo.png"><i>2M</i></span><span><img src="img/bi_demj.png"><i>48</i></span><span><img src="img/bi_dema.png"><i>31</i></span><span><img src="img/bi_yaong.png"><i>4M</i></span></div><div class="hp"><div class="fill"></div><b>보스 이름</b><em>73.4%</em></div></div></div><div class="at " style="left:19.79%;top:87.96%;width:15.62%;"><div class="resbars"><div class="r hp"><i style="width:82%"></i></div><div class="r mp"><i style="width:18%"></i></div><div class="r sp"><i style="width:96%"></i></div></div></div><div class="at " style="left:36.46%;top:91.20%;width:27.08%;"><div class="menubar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="at " style="left:2.08%;top:23.15%;width:24.65%;"><img src="img/ov_goal_edit.png" style="width:100%"></div><div class="at " style="left:2.08%;top:44.44%;width:18.12%;"><img src="img/ov_buff_edit.png" style="width:100%"></div><div class="at " style="left:37.50%;top:21.30%;width:26.25%;"><img src="img/ov_toast_edit.png" style="width:100%"></div><div class="at " style="left:58.33%;top:56.48%;width:18.12%;"><img src="img/ov_boss_edit.png" style="width:100%"></div><div class="at " style="left:39.58%;top:51.85%;width:17.33%;"><img src="img/ov_skill_edit.png" style="width:100%"></div><div class="at " style="left:2.08%;top:79.63%;width:16.25%;"><img src="img/ov_res_edit.png" style="width:100%"></div><div class="at win" style="left:71.09%;top:64.81%;width:26.88%;"><img src="img/editbar.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>배치 편집 중: 점선 상자를 끌어서 옮기고, 휠로 크기. 오른쪽 아래가 편집 창</figcaption></figure>
+<table class="kv wide">
+<tr><th>드래그</th><td>그 상자만 옮기기</td></tr>
+<tr><th>휠</th><td>그 상자 크기(배율) — 목표 금액은 글자 크기</td></tr>
+<tr><th><kbd>Shift</kbd> + 드래그 / 휠</th><td>모든 상자를 함께 옮기기 / 함께 키우기</td></tr>
+<tr><th>편집 창 · 배율 · 투명도</th><td>버프 표시 · 스킬 표시 전체의 크기와 투명도</td></tr>
+<tr><th>세로로 정리</th><td>흩어진 확대 아이콘을 한 줄로 세움</td></tr>
+<tr><th>저장 / 취소</th><td>저장해야 위치가 남아요. 취소하면 편집 전 자리로</td></tr>
+</table>
+<div class="callout warn"><b>읽는 자리를 가리지 마세요.</b> 오버레이가 상태창 · 스킬창 · 보스 바 · 자원 막대 위에 겹치면,
+'스크린샷에 포함'을 켰을 때 자기 그림을 읽어 오작동할 수 있어요. 빈 곳에 두는 것이 안전합니다.
+상자가 화면 밖으로 사라졌다면 배치 편집을 열 때 자동으로 화면 안으로 돌아옵니다.</div>
+</section><section class="chap" id="goal">
+<h1><span class="no">11</span>목표 금액 (경매장 시세 · 은행 잔고)</h1>
+<p>사고 싶은 물건(경매장 시세 자동) · 갚을 빚 · 모을 금액을 적어 두면 <b>은행 잔고와 비교해 얼마 남았는지</b>를 오버레이로 보여 줍니다.
+위 항목부터 잔고를 채워 각 항목이 '구매 가능'인지, 거기까지 사려면 얼마가 부족한지 알려 줘요. 마스터 스위치와 상관없이 동작합니다.</p>
+<h3 id="goal-1">11-1. 넥슨 Open API 키 받기 (시세용, 무료)</h3>
+<ol class="steps num">
+<li>브라우저에서 <b>openapi.nexon.com</b> 에 넥슨 계정으로 로그인합니다.</li>
+<li><b>애플리케이션 등록</b> → 게임은 <b>마비노기</b>, 이름은 아무거나(예: 마비오라) → 등록.</li>
+<li>발급된 키(<code>live_…</code> 또는 <code>test_…</code>)를 복사해 목표 금액 창 아래 <b>넥슨 Open API 키</b> 칸에 붙여 넣습니다.</li>
+</ol>
+<div class="callout info">키는 내 PC 의 <code>profiles</code> 폴더에만 저장됩니다. 개발 단계 키는 <b>하루 1000회</b> 호출 한도가 있어 마비오라가 호출 수를 세고,
+한도 50회 전에 자동 조회를 멈춥니다. 경매장 정보는 실제보다 평균 10분쯤 늦어요. <b>키가 없어도</b> 버프 감시 등 다른 기능에는 문제가 없습니다.</div>
+<h3 id="goal-2">11-2. 은행 잔고 읽기 (선택)</h3>
+<p>경매장 창을 연 채로 두 곳을 지정하면, 이후 경매장 창을 열 때마다 잔액을 읽어 갱신합니다.</p>
+<figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at dim" style="left:0.00%;top:0.00%;width:100.00%;"></div><div class="at clear" style="left:15.62%;top:14.81%;width:52.08%;"><div class="awin"><div class="atitle"><span class="scale">⚖</span> 경매장</div><div class="abal">은행 잔액 <b>1,362,400,483 Gold</b></div><div class="alist"><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div></div><div class="at drag" style="left:16.56%;top:16.48%;width:8.59%;height:4.63%;"></div><div class="at badge sc" style="left:15.42%;top:14.44%;">①</div><div class="at drag" style="left:49.74%;top:27.78%;width:16.67%;height:4.07%;"></div><div class="at badge sc" style="left:48.70%;top:25.74%;">②</div><div class="at hint" style="left:1.04%;top:1.85%;width:72.92%;">✓ 화면에서 이 자리 하나만 찾아짐 — 기준점으로 좋습니다. Enter 저장 / R 다시 / Esc 취소</div><span class="tag">게임 화면 예시 (그림)</span></div><figcaption>① 창 제목(저울 아이콘 + '경매장')을 딱 맞게, ② '은행 잔액' 숫자 칸 전체를 드래그</figcaption></figure>
+<ul class="steps">
+<li><b>① 창 제목 지정</b>: 창이 열렸는지 알고, 창을 옮겨도 잔액 칸을 따라가는 기준점입니다. "화면에서 이 자리 하나만 찾아짐"이 떠야 좋아요.</li>
+<li><b>② 잔액 칸 지정</b>: 금액이 길어져도 잘리지 않게 칸 전체를. 같은 값을 3번 연속 읽어야 반영합니다(잘못 읽기 방지).</li>
+<li>못 읽는 숫자가 있으면 창의 <b>화면 금액 알려주기</b>에 지금 보이는 잔액을 그대로 적고 <b>배우기</b> → 다음부터 읽어요.</li>
+</ul>
+
+<h3 id="goal-3">11-3. 목록 만들기</h3>
+<figure class="shot" style="width:64%"><div class="frame"><img src="img/goal.png"><span class="mbox" style="left:5.00%;top:11.61%;width:90.00%;height:1.69%"></span><span class="badge" style="left:5.00%;top:11.61%">1</span><span class="mbox" style="left:5.00%;top:13.98%;width:12.00%;height:2.71%"></span><span class="badge" style="left:5.00%;top:13.98%">2</span><span class="mbox" style="left:17.89%;top:13.98%;width:12.00%;height:2.71%"></span><span class="badge" style="left:17.89%;top:13.98%">3</span><span class="mbox" style="left:11.33%;top:23.56%;width:22.22%;height:2.63%"></span><span class="badge" style="left:11.33%;top:23.56%">4</span><span class="mbox" style="left:54.67%;top:23.56%;width:20.00%;height:2.63%"></span><span class="badge" style="left:54.67%;top:23.56%">5</span><span class="mbox" style="left:34.78%;top:33.05%;width:8.89%;height:2.88%"></span><span class="badge" style="left:34.78%;top:33.05%">6</span><span class="mbox" style="left:11.22%;top:43.81%;width:74.67%;height:2.63%"></span><span class="badge" style="left:11.22%;top:43.81%">7</span><span class="mbox" style="left:4.56%;top:33.31%;width:7.67%;height:2.37%"></span><span class="badge" style="left:4.56%;top:33.31%">8</span><span class="mbox" style="left:9.67%;top:60.93%;width:56.22%;height:2.63%"></span><span class="badge" style="left:9.67%;top:60.93%">9</span><span class="mbox" style="left:76.56%;top:60.93%;width:8.78%;height:2.71%"></span><span class="badge" style="left:76.56%;top:60.93%">10</span><span class="mbox" style="left:8.44%;top:67.71%;width:62.00%;height:2.63%"></span><span class="badge" style="left:8.44%;top:67.71%">11</span><span class="mbox" style="left:16.44%;top:75.51%;width:70.00%;height:2.63%"></span><span class="badge" style="left:16.44%;top:75.51%">12</span><span class="mbox" style="left:33.22%;top:82.20%;width:8.89%;height:2.88%"></span><span class="badge" style="left:33.22%;top:82.20%">13</span><span class="mbox" style="left:5.00%;top:85.76%;width:13.00%;height:2.37%"></span><span class="badge" style="left:5.00%;top:85.76%">14</span></div><figcaption>홈 → 목표 금액</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>잔고</b> — 화면에서 읽은 값 / 직접 입력한 값과 시각.</span></li><li><b class="n">2</b><span><b>① 창 제목</b> 지정 / 다시.</span></li><li><b class="n">3</b><span><b>② 잔액 칸</b> 지정 / 다시. 오른쪽에 지금 읽은 값.</span></li><li><b class="n">4</b><span><b>직접 입력</b> — '1억 3624만 483' 처럼 써도 됩니다.</span></li><li><b class="n">5</b><span><b>화면 금액 알려주기</b> — 못 읽을 때 글자 배우기.</span></li><li><b class="n">6</b><span><b>개수</b> — 싼 매물부터 개수만큼 담은 합이 가격.</span></li><li><b class="n">7</b><span><b>옵션 조건</b> — 맞는 매물만 가격에. 오른쪽 '맞는 매물 3/41'.</span></li><li><b class="n">8</b><span><b>완료</b> — 샀거나 갚은 항목은 합계에서 빠짐.</span></li><li><b class="n">9</b><span><b>아이템 추가</b> — 일부만 쳐도 목록에서 고를 수 있어요.</span></li><li><b class="n">10</b><span><b>이름 찾기</b> — 정확한 이름을 모를 때 (사전 → 없으면 경매장 1회 호출).</span></li><li><b class="n">11</b><span><b>금액 추가</b> — 빚 · 계약금처럼 고정 금액.</span></li><li><b class="n">12</b><span><b>API 키</b> — 11-1 에서 받은 키.</span></li><li><b class="n">13</b><span><b>자동 새로고침</b> — N분마다 가격 다시 (0 = 끔).</span></li><li><b class="n">14</b><span><b>오버레이 표시</b> · 완료 항목 숨기기.</span></li></ol>
+
+<h3 id="goal-4">11-4. 옵션 조건 쓰는 법</h3>
+<p>쉼표로 여러 개를 쓰면 <b>모두 만족</b>하는 매물만 가격에 들어갑니다. 입력하는 동안 그 아이템에 실제로 있는 옵션 이름이 자동완성으로 떠요.</p>
+<table class="grid">
+<tr><th>쓰는 법</th><th>뜻</th></tr>
+<tr><td><code>최공 20 이상</code></td><td>최대 공격력(세공 · 옵션) 20 이상</td></tr>
+<tr><td><code>최공 18~20</code> / <code>최공 20 이하</code></td><td>범위 / 이하</td></tr>
+<tr><td><code>세공 랜스 차지 7</code></td><td>세공 '랜스 차지' 레벨 7 이상</td></tr>
+<tr><td><code>광포한</code></td><td>인챈트 이름(접두 · 접미)이 '광포한'</td></tr>
+<tr><td><code>특개 S 6 이상</code></td><td>특별 개조 S 6단계 이상</td></tr>
+<tr><td><code>파트 A R 250 이상</code></td><td>아이템 색상 파트 A 의 R 값</td></tr>
+</table>
+<p class="small">줄임말: 최공 · 최대공 · 최소공 · 마공 · 크뎀 · 크리 · 밸런 · 공속 · 이속 · 캐속 · 쿨감 · 최생 · 최마 · 최스 · 마방 · 마보 · 에코 · 각성 · 고유 · 토템 · 유물 · 세트 · 장인 · 특개 · 의장 · 색</p>
+<h3 id="goal-5">11-5. 오버레이</h3>
+<div class="two">
+<div><figure class="scene-fig"><div class="scene "><img class="bg" src="img/scene_bg.png"><div class="at " style="left:3.12%;top:5.56%;width:49.29%;"><img src="img/ov_goal.png" style="width:100%"></div><span class="tag">게임 화면 예시 (그림)</span></div></figure></div>
+<div><ul class="steps">
+<li>맨 위 <b>"6억 8759만 남음"</b>이 가장 크게 — 전부 사려면 부족한 금액. 다 살 수 있으면 초록 "모두 구매 가능".</li>
+<li>항목마다 가격과 <span class="g">구매 가능</span> / <span class="o">N 부족</span>.</li>
+<li>위치는 배치 편집에서 드래그, 휠로 글자 크기.</li>
+</ul></div></div>
+</section><section class="chap" id="specup">
+<h1><span class="no">12</span>스펙업 계산기</h1>
+<p>내 캐릭터 정보와 장비를 넣으면 <b>무엇을 올리면 총딜이 몇 % 오르는지</b>, 그리고 <b>1억 골드 당 몇 % 인지</b>로 순위를 매겨 줍니다.
+홈 아래 <b>스펙업</b> 버튼(또는 트레이 메뉴)으로 열어요. 게임이 꺼져 있어도 됩니다.</p>
+<div class="flow">
+  <div><b>내 스펙</b><span>정보창 수치</span></div><i>→</i><div><b>장비 · 오검</b><span>부위별 아이템</span></div><i>→</i>
+  <div><b>딜 비중</b><span>스킬별 %</span></div><i>⇒</i>
+  <div class="hl"><b>항목별 효율 · 추천 순위 · 매물 찾기</b><span>결과</span></div>
+</div>
+<div class="callout warn">게임 계산식은 공개되지 않아 실측 · 커뮤니티 자료로 추정한 값입니다. <b>순서를 정하는 참고용</b>으로 쓰고,
+큰돈을 쓰기 전에는 목인으로 한 번 확인해 보세요. 계산 전제: 대상 레넨의 미이르 목인, 포션 · 전장의 서곡 · 상태지원 적용.</div>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/spec_my.png"><span class="mbox" style="left:11.69%;top:2.11%;width:14.07%;height:3.33%"></span><span class="badge" style="left:11.69%;top:2.11%">1</span><span class="mbox" style="left:26.44%;top:2.00%;width:5.51%;height:3.56%"></span><span class="badge" style="left:26.44%;top:2.00%">2</span><span class="mbox" style="left:0.00%;top:6.44%;width:42.63%;height:3.67%"></span><span class="badge" style="left:0.00%;top:6.44%">3</span></div><figcaption>12-1. 내 스펙 탭: 게임 '캐릭터 정보' 창을 보고 채워요. 비운 칸은 기본값(주스탯 3000, 피어싱 11 …)</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>캐릭터</b> — 최대 3명. 홈의 캐릭터와는 별개입니다.</span></li><li><b class="n">2</b><span><b>+ 추가 · 이름 · 삭제</b>.</span></li><li><b class="n">3</b><span><b>탭</b> — 왼쪽 세 개는 입력, 오른쪽 세 개는 결과.</span></li></ol>
+
+<h3 id="specup-1">12-1. 내 스펙 — 무엇을 넣나요</h3>
+<table class="grid">
+<tr><th>칸</th><th>넣을 값</th></tr>
+<tr><td>아르카나 · 최대 대미지 · 피어싱</td><td>캐릭터 정보창 그대로 (마법 아르카나는 마법 공격력, 연금은 연금술 대미지)</td></tr>
+<tr><td>크리티컬 히트 랭크 · 종합/각성 레벨</td><td>정보창 · 아르카나 창</td></tr>
+<tr><td>무기 · 보조무기 · 무기 보너스 % · 특별 개조</td><td>지금 든 무기. 특별 개조는 R/S 와 단계</td></tr>
+<tr><td>재능 · 정령 · 펫</td><td>그랜드마스터 재능 체크, 정령 연마 · 봉인 해제 단계, 펫 하우스 등</td></tr>
+<tr><td>미니어처 · 인형 가방</td><td>지금 쓰는 것. 주스탯 미니어처는 이미 정보창에 들어 있어 '바꿀 때 차이'에만 써요</td></tr>
+<tr><td>아르카나 전용</td><td>연금 4속성 · 마리오네트 최대 대미지 · 세이크리드 방어 등 (해당 아르카나만 보임)</td></tr>
+<tr><td>토템 · 주화 · 타이틀</td><td>애뮬릿/에린 사전 토템, 알반 토템, 브리레흐의 주화, 지금 단 1차 · 2차 타이틀</td></tr>
+</table>
+<div class="callout info"><b>정보창 수치에 이미 들어 있는 것</b>(인챈트 · 세공 스탯 · 타이틀 주스탯 · 미니어처 주스탯)은 두 번 더하지 않아요.
+정보창에 안 나오는 것(세트 효과 · 스킬 세공 · 크리 대미지 성수 · 타이틀 크리 대미지 등)만 따로 계산에 더합니다.</div>
+
+<figure class="shot" style="width:86%"><div class="frame"><img src="img/spec_equip.png"><span class="mbox" style="left:2.80%;top:15.42%;width:12.71%;height:5.33%"></span><span class="badge" style="left:2.80%;top:15.42%">1</span><span class="mbox" style="left:46.10%;top:13.50%;width:50.51%;height:2.58%"></span><span class="badge" style="left:46.10%;top:13.50%">2</span><span class="mbox" style="left:46.10%;top:21.25%;width:7.29%;height:4.00%"></span><span class="badge" style="left:46.10%;top:21.25%">3</span><span class="mbox" style="left:62.37%;top:21.25%;width:10.17%;height:4.00%"></span><span class="badge" style="left:62.37%;top:21.25%">4</span><span class="mbox" style="left:46.10%;top:26.08%;width:4.15%;height:2.58%"></span><span class="badge" style="left:46.10%;top:26.08%">5</span><span class="mbox" style="left:46.10%;top:29.33%;width:12.71%;height:1.50%"></span><span class="badge" style="left:46.10%;top:29.33%">6</span><span class="mbox" style="left:46.10%;top:37.17%;width:50.51%;height:1.17%"></span><span class="badge" style="left:46.10%;top:37.17%">7</span><span class="mbox" style="left:46.10%;top:53.67%;width:50.51%;height:1.17%"></span><span class="badge" style="left:46.10%;top:53.67%">8</span><span class="mbox" style="left:46.10%;top:76.83%;width:50.51%;height:1.17%"></span><span class="badge" style="left:46.10%;top:76.83%">9</span><span class="mbox" style="left:46.10%;top:91.50%;width:8.22%;height:2.83%"></span><span class="badge" style="left:46.10%;top:91.50%">10</span><span class="mbox" style="left:2.80%;top:39.42%;width:40.85%;height:3.67%"></span><span class="badge" style="left:2.80%;top:39.42%">11</span></div><figcaption>12-2. 장비 · 오검 탭 (주무기를 고른 모습)</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>부위 칸</b> — 눌러서 오른쪽에서 편집. 액세서리 · 머리 · 의상 · 장갑 · 신발 · 로브 · 무기, 유물 3칸, 에코스톤 3칸.</span></li><li><b class="n">2</b><span><b>장비 아이템</b> — 이름 일부만 쳐도 목록. 고르면 세트 포인트 기본값이 채워져요.</span></li><li><b class="n">3</b><span><b>이 아이템 피어싱</b> — 기본 = 인챈트 포함 최대치 (예: 태양과 달의 검 6, 소울 리버레이트 블레이드 8).</span></li><li><b class="n">4</b><span><b>공격 최대 (툴팁 표시값)</b> — 무기 툴팁 '공격 ~ N' 의 N. 개조 · 세공 '최대 공격력'이 이미 들어간 값.</span></li><li><b class="n">5</b><span><b>장인 개조</b> — 툴팁 문구 그대로 (예: 최대대미지 25 증가). 매물과 바꿀 때 빠지는 몫이라 입력하면 비교가 정확해요.</span></li><li><b class="n">6</b><span><b>세트 효과 포인트</b> — 같은 효과 합 10 이상이면 발동.</span></li><li><b class="n">7</b><span><b>세공 옵션</b> 3칸 — 이름 · 레벨. [목록]으로 고르기.</span></li><li><b class="n">8</b><span><b>인챈트</b> — 접두 · 접미. 수치 범위는 경매장에서 본 값.</span></li><li><b class="n">9</b><span><b>무리아스의 성수</b> — 크리티컬 대미지 성수만 계산에 더해요.</span></li><li><b class="n">10</b><span><b>어둠의 에르그 레벨</b> — 해당 무기 종류만.</span></li><li><b class="n">11</b><span><b>오검</b> — 5칸.</span></li></ol>
+
+<h3 id="specup-2">12-2. 장비 입력 요령</h3>
+<ul class="steps">
+<li><b>세트 효과</b>: 착용 장비 전부의 포인트를 효과별로 더해 <b>10 이상이면 발동</b>. 같은 이름의 세트가 여러 수치로 발동하면 <b>큰 값 하나만</b> 적용돼요 (예: 크리 대미지 7% 와 3% → 7%).
+무기 고유 효과는 세트와 별개로 함께 적용됩니다.</li>
+<li><b>세트 수치 고르기</b>: 윈드밀 강화처럼 수치가 여러 종류(방어구 30 / 무기 15 …)인 세트는 칸마다 고를 수 있고, 기본은 무기 칸 = 무기 값, 나머지 = 방어구 값.</li>
+<li><b>무기 마스터리 세공</b>: 소드 마스터리는 검(한손 · 양손), 블런트 마스터리는 둔기를 들었을 때만 계산합니다.
+엘레멘탈 나이트 쌍수는 인간 = 한손 검(소드), 자이언트 = 한손 둔기(블런트).</li>
+<li><b>실제로 장비를 바꿨다면</b> 내 스펙 탭의 정보창 수치도 새로 넣어 주세요. 총딜 계산의 기준은 정보창 수치입니다.</li>
+</ul>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/spec_share.png"><span class="mbox" style="left:29.75%;top:17.67%;width:6.36%;height:3.56%"></span><span class="badge" style="left:29.75%;top:17.67%">1</span><span class="mbox" style="left:36.78%;top:17.67%;width:8.81%;height:3.56%"></span><span class="badge" style="left:36.78%;top:17.67%">2</span><span class="mbox" style="left:88.05%;top:30.11%;width:8.47%;height:3.78%"></span><span class="badge" style="left:88.05%;top:30.11%">3</span><span class="mbox" style="left:3.47%;top:74.22%;width:17.80%;height:2.67%"></span><span class="badge" style="left:3.47%;top:74.22%">4</span><span class="mbox" style="left:3.47%;top:83.22%;width:6.27%;height:3.44%"></span><span class="badge" style="left:3.47%;top:83.22%">5</span></div><figcaption>12-3. 딜 비중 탭</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>불러오기</b> — 아르카나별 기본 프리셋 또는 내가 저장한 목록.</span></li><li><b class="n">2</b><span><b>지금 비중 저장</b> — 내 목록으로 저장 (아르카나마다 따로).</span></li><li><b class="n">3</b><span><b>스킬별 딜 비중 %</b> — 연습 모드(목인)에서 측정한 값.</span></li><li><b class="n">4</b><span><b>합계</b> — 100% 가 아니어도 비율대로 100% 로 맞춰 계산해요.</span></li><li><b class="n">5</b><span><b>스타더스트</b> — 플레어 · 블래스트 비중은 위 합계에서 빠지고 형상 효과 계산에만.</span></li></ol>
+<div class="callout info">딜 비중을 하나도 안 넣으면 퓨리 파이터 · 세이크리드 가드는 내장 기본값, 나머지는 주스탯 비례로 계산합니다. 정확할수록 세공 · 세트 순위가 좋아져요.</div>
+
+<h3 id="specup-3">12-4. 항목별 효율 — "어디를 올릴까"</h3>
+<p>계산 항목마다 <b>한 단계 올리면</b> 과 <b>상한까지 올리면</b> 총딜이 몇 % 오르는지 보여 줍니다. 오른쪽 <b>찾아보기 ▾</b>를 누르면 그 조건으로 매물 찾기 탭으로 넘어가요.</p>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/spec_axis.png"><span class="mbox" style="left:2.03%;top:14.22%;width:6.44%;height:2.33%"></span><span class="badge" style="left:2.03%;top:14.22%">1</span><span class="mbox" style="left:9.15%;top:14.22%;width:7.12%;height:2.33%"></span><span class="badge" style="left:9.15%;top:14.22%">2</span><span class="badge" style="left:2.03%;top:19.44%">3</span></div><figcaption>항목별 효율 탭</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>한 단계 순</b> — 피어싱 +1 · 스탯 +1 · 세공 +1레벨 · 유물 +1 · 세트 발동.</span></li><li><b class="n">2</b><span><b>상한까지 순</b> — 실제 한계가 있는 것만: 피어싱 11, 세공 = 낀 장비 칸마다 최대 레벨 합 (예: 검 25 + 액세서리 4 + 4), 오검 최대.</span></li><li><b class="n">3</b><span><b>표</b> — 머리글을 누르면 정렬. '올리는 방법'에 어디서 얻는지.</span></li></ol>
+
+<h3 id="specup-4">12-5. 추천 순위 — "무엇부터 살까"</h3>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/spec_rank.png"><span class="mbox" style="left:2.03%;top:11.56%;width:95.93%;height:13.33%"></span><span class="badge" style="left:2.03%;top:11.56%">1</span><span class="mbox" style="left:2.03%;top:25.44%;width:10.93%;height:2.33%"></span><span class="badge" style="left:2.03%;top:25.44%">2</span><span class="mbox" style="left:25.76%;top:25.33%;width:6.02%;height:2.67%"></span><span class="badge" style="left:25.76%;top:25.33%">3</span><span class="mbox" style="left:2.03%;top:29.00%;width:9.83%;height:3.56%"></span><span class="badge" style="left:2.03%;top:29.00%">4</span><span class="mbox" style="left:12.54%;top:28.89%;width:11.10%;height:3.78%"></span><span class="badge" style="left:12.54%;top:28.89%">5</span><span class="badge" style="left:2.03%;top:35.56%">6</span></div><figcaption>추천 순위 탭 (효율만 정렬)</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>스탯 1 올리면</b> — 총딜 1% = 주스탯 몇인지, 스탯별 환산.</span></li><li><b class="n">2</b><span><b>가격 대비 (1억 G 당) / 효율만 (총딜 +%)</b> 정렬 전환.</span></li><li><b class="n">3</b><span><b>분류 체크</b> — 미니어처 · 인형 가방 · 부가 · 성수 · 개조 · 타이틀 · 직접 추가 · 세공 · 유물 · 오검.</span></li><li><b class="n">4</b><span><b>경매장 시세 받기</b> — 후보 이름의 최저가 (API 키 필요, 30분 캐시).</span></li><li><b class="n">5</b><span><b>+ 후보 직접 추가</b> — 토템 · 주화 · 인챈트처럼 목록에 없는 것은 바뀌는 스탯을 적어 비교.</span></li><li><b class="n">6</b><span><b>가격 칸 더블클릭</b> — 직접 입력 ('1억 2000만', '3500만'). 지우면 경매장 값으로.</span></li></ol>
+<ul class="steps">
+<li><b>개조</b>: 특별 개조 7 → 8 만 후보로 둡니다 (7단계까지는 비용이 작아서). 가격 = 8단계 붉은/푸른 개조석 중 싼 것 × (1 / 성공률), 다른 색이면 + 특별 개조 전환 키트.
+성공률은 위 <b>개조 성공률</b> 칸 (기본 45%, 이벤트 땐 50%).</li>
+<li><b>성수</b>: 지금 성수 → 목표 성수까지 평균 몇 개가 드는지 확률로 계산합니다.</li>
+<li><b>타이틀</b>: 1차 · 2차를 하나씩 바꿔 본 결과. 쿠폰 가격이 있으면 가격 대비로도.</li>
+<li>세공 · 유물 · 오검은 경매장에서 바로 사는 게 아니라서 <b>가격을 직접 넣어야</b> 가격 대비 순위에 들어가요.</li>
+</ul>
+
+<h3 id="specup-5">12-6. 매물 찾기 — "경매장 매물로 바꾸면"</h3>
+<p>경매장 카테고리 매물을 <b>전부</b> 받아, 하나하나를 장비 탭의 <b>같은 부위 지금 아이템과 바꿨다고 보고</b> 총딜 변화를 계산합니다.
+피어싱 · 주스탯(인챈트 · 장인 개조 · 세공 · 무기 공격) · 세트 · 이 아르카나에 유효한 세공 · 무기 특수 효과를 모두 비교해요.</p>
+<figure class="shot" style="width:100%"><div class="frame"><img src="img/spec_market.png"><span class="mbox" style="left:4.66%;top:11.78%;width:8.14%;height:3.33%"></span><span class="badge" style="left:4.66%;top:11.78%">1</span><span class="mbox" style="left:16.10%;top:11.78%;width:22.03%;height:3.33%"></span><span class="badge" style="left:16.10%;top:11.78%">2</span><span class="mbox" style="left:38.81%;top:11.56%;width:7.54%;height:3.78%"></span><span class="badge" style="left:38.81%;top:11.56%">3</span><span class="mbox" style="left:13.81%;top:16.89%;width:9.75%;height:2.33%"></span><span class="badge" style="left:13.81%;top:16.89%">4</span><span class="mbox" style="left:30.76%;top:16.22%;width:8.73%;height:3.78%"></span><span class="badge" style="left:30.76%;top:16.22%">5</span><span class="mbox" style="left:47.88%;top:16.22%;width:5.51%;height:3.78%"></span><span class="badge" style="left:47.88%;top:16.22%">6</span><span class="badge" style="left:2.03%;top:28.22%">7</span></div><figcaption>매물 찾기 탭 (실제 경매장 수집본으로 계산한 예)</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>부위</b> — 기본 '모든 부위' (8칸 전부 비교). 한 부위만 볼 수도 있어요.</span></li><li><b class="n">2</b><span><b>조건</b> — 기본 '전체'. 항목별 효율의 찾아보기로 오면 그 조건이 들어와요.</span></li><li><b class="n">3</b><span><b>찾아보기</b> — 받은 매물은 1시간 동안 다시 안 받아요 (호출 절약).</span></li><li><b class="n">4</b><span><b>정렬</b> — 효율만(총딜 +%) / 가격 대비(1억 당).</span></li><li><b class="n">5</b><span><b>최소 총딜</b> — 이보다 적게 오르는 매물은 숨김.</span></li><li><b class="n">6</b><span><b>보여 줄 개수</b> — 10~50 (기본 30).</span></li><li><b class="n">7</b><span><b>결과</b> — 더블클릭하면 아이템 이름이 복사돼요 → 게임 경매장 검색에 붙여 넣기.</span></li></ol>
+<div class="callout warn"><b>정확하게 비교하려면</b> 장비 탭에 지금 칸의 <b>인챈트 · 장인 개조 · 공격 최대(툴팁 값)</b>를 넣어 주세요.
+비어 있으면 결과 줄에 "⚠ 지금 칸 인챈트 미입력"이 붙습니다. 처음 '모든 부위'를 받을 때는 경매장 호출이 80번 안팎, 계산에 몇십 초 걸릴 수 있어요.</div>
+</section><section class="chap" id="settings">
+<h1><span class="no">13</span>일반 설정 · 소리 · 가챠 덮개</h1>
+<figure class="shot" style="width:56%"><div class="frame"><img src="img/general.png"><span class="mbox" style="left:5.92%;top:8.08%;width:87.11%;height:2.15%"></span><span class="badge" style="left:5.92%;top:8.08%">1</span><span class="mbox" style="left:27.24%;top:13.92%;width:48.03%;height:2.38%"></span><span class="badge" style="left:27.24%;top:13.92%">2</span><span class="mbox" style="left:27.24%;top:26.92%;width:46.58%;height:2.38%"></span><span class="badge" style="left:27.24%;top:26.92%">3</span><span class="mbox" style="left:27.24%;top:29.92%;width:52.89%;height:2.31%"></span><span class="badge" style="left:27.24%;top:29.92%">4</span><span class="mbox" style="left:27.24%;top:35.92%;width:32.89%;height:2.31%"></span><span class="badge" style="left:27.24%;top:35.92%">5</span><span class="mbox" style="left:27.24%;top:38.85%;width:21.45%;height:2.31%"></span><span class="badge" style="left:27.24%;top:38.85%">6</span><span class="mbox" style="left:27.24%;top:41.77%;width:10.53%;height:2.62%"></span><span class="badge" style="left:27.24%;top:41.77%">7</span><span class="mbox" style="left:5.92%;top:50.54%;width:87.11%;height:2.15%"></span><span class="badge" style="left:5.92%;top:50.54%">8</span><span class="mbox" style="left:5.92%;top:53.31%;width:87.11%;height:2.15%"></span><span class="badge" style="left:5.92%;top:53.31%">9</span><span class="mbox" style="left:5.92%;top:62.85%;width:87.11%;height:2.15%"></span><span class="badge" style="left:5.92%;top:62.85%">10</span><span class="mbox" style="left:27.24%;top:72.38%;width:65.79%;height:2.31%"></span><span class="badge" style="left:27.24%;top:72.38%">11</span><span class="mbox" style="left:5.92%;top:85.23%;width:13.29%;height:2.46%"></span><span class="badge" style="left:5.92%;top:85.23%">12</span><span class="mbox" style="left:27.24%;top:92.31%;width:18.42%;height:2.38%"></span><span class="badge" style="left:27.24%;top:92.31%">13</span></div><figcaption>홈 → 일반 설정</figcaption></figure><ol class="legend"><li><b class="n">1</b><span><b>단축키 사용</b> — 기본 꺼짐.</span></li><li><b class="n">2</b><span><b>단축키 칸</b> — 클릭 후 키 조합을 누르면 입력. Backspace = 사용 안 함.</span></li><li><b class="n">3</b><span><b>게임 창 제목</b> — 작업 표시줄에 보이는 이름 ('마비노기'). 게임 창을 못 찾을 때 확인.</span></li><li><b class="n">4</b><span><b>UI 크기 변경</b> — 게임 옵션과 같게. 바꾸면 영역 설정을 다시.</span></li><li><b class="n">5</b><span><b>윈도우 HDR</b> — 자동 감지 권장.</span></li><li><b class="n">6</b><span><b>HDR 스킬 아이콘 밝기</b> — 스킬 아이콘이 하얗게 보이면 세게.</span></li><li><b class="n">7</b><span><b>초당 확인 횟수</b> — 5면 충분. 높이면 CPU 사용 증가.</span></li><li><b class="n">8</b><span><b>문제 진단용 프레임 자동 저장</b> — 문제 있을 때만 켜기 (15장).</span></li><li><b class="n">9</b><span><b>오버레이를 스크린샷에 포함</b> — 가이드 · 방송용. 평소엔 끄기.</span></li><li><b class="n">10</b><span><b>소리 켜기</b> — 끄면 모든 소리 꺼짐 (화면 알림은 그대로).</span></li><li><b class="n">11</b><span><b>목소리 · 볼륨 · 빠르기</b> — 윈도우 한국어 음성 (보통 Heami).</span></li><li><b class="n">12</b><span><b>들어보기</b> — 저장 전 값으로 바로 확인.</span></li><li><b class="n">13</b><span><b>가챠 덮개 그림</b> — png · jpg (비우면 어두운 단색).</span></li></ol>
+
+<h3 id="settings-1">소리 정리</h3>
+<p>무엇을 어떤 소리로 알릴지는 <b>항목마다</b> 고르고(음성 / 효과음 / 소리 없음, 기본 소리 없음), 일반 설정은 <b>전체 켜기와 목소리 · 크기</b>만 정합니다.</p>
+<table class="grid">
+<tr><th>무엇</th><th>어디서 고르나</th><th>음성 예</th></tr>
+<tr><td>상태창 버프</td><td>감시 항목 → 카드의 '소리'</td><td>"실드 꺼짐", "투안 30초"</td></tr>
+<tr><td>보스 디버프 빠짐 · 재표시</td><td>보스 디버프 → 빠짐 소리</td><td>"모모 빠짐", "모모 20초"</td></tr>
+<tr><td>보스 버스트</td><td>보스 디버프 → 버스트 소리</td><td>"붕파! 극딜!" (다른 소리를 끊고 바로)</td></tr>
+<tr><td>생명력 · 마나 · 스태미나</td><td>자원 알림 → 소리</td><td>"생명력 부족" (생명력이 가장 먼저)</td></tr>
+<tr><td>투아림</td><td>투아림 → 소리</td><td>"투아림 30초 전", "도르카 부족"</td></tr>
+</table>
+<p class="small">목록에 한국어 목소리가 없으면 Windows 설정 → 시간 및 언어 → 음성 에서 한국어 음성을 추가하세요.</p>
+<h3 id="settings-2">가챠 덮개</h3>
+<p>가챠 결과 화면을 가리는 창입니다. 홈의 <b>가챠 덮개</b>를 누르면 뜨고, 다시 누르면 사라집니다(자리 기억).</p>
+<ul class="steps"><li><b>끌기</b> = 이동, <b>가장자리</b> = 크기 조절.</li><li><b>휠을 내리면 위에서부터 줄어들어</b> 결과를 조금씩 공개할 수 있어요.</li>
+<li>그림은 일반 설정 → 덮개 그림 (창 크기에 꽉 차게, 넘치는 부분은 잘림).</li></ul>
+</section><section class="chap" id="trouble">
+<h1><span class="no">14</span>문제 해결</h1>
+<table class="grid trouble">
+<tr><th>증상</th><th>확인 · 해결</th></tr>
+<tr><td>"게임 창을 못 찾음"</td><td>게임을 먼저 켜 두었는지, 일반 설정의 <b>게임 창 제목</b>이 작업 표시줄 이름과 같은지.</td></tr>
+<tr><td>영역 설정에서 "행을 못 찾음"</td><td>어두운 곳에서, 상태창 패널 폭에 맞게 다시. UI 크기 설정이 게임과 같은지.</td></tr>
+<tr><td>"행 간격이 … UI 크기가 다릅니다"</td><td>일반 설정 → UI 크기 변경을 게임 옵션과 같게 → 영역 설정 다시.</td></tr>
+<tr><td>홈에 "상태창 항목이 변경됨"</td><td>고정 목록을 바꿨거나 다른 캐릭터. 맞는 캐릭터로 전환하거나 <b>레이아웃 다시</b>.</td></tr>
+<tr><td>"밝은 곳에서 잡혀 일부 행 판정 못 함"</td><td>어두운 곳에서 <b>레이아웃 다시</b>.</td></tr>
+<tr><td>알림이 늦거나 시간이 튐</td><td>이펙트가 글자를 덮는 순간은 추정 타이머가 메워요. 자주 그러면 진단 프레임을 보내 주세요.</td></tr>
+<tr><td>보스 디버프가 안 뜸</td><td>띠가 없는 보스이거나 그 보스와의 첫 전투(첫 디버프부터 동작). '이 캐릭터에서 보스 디버프 감시 사용'이 켜져 있는지.</td></tr>
+<tr><td>오버레이가 안 보임</td><td>마스터 스위치가 켜졌는지, 게임 창이 앞에 있는지('뒤로 가면 숨김'), 배치 편집으로 위치 확인.</td></tr>
+<tr><td>소리가 안 남</td><td>일반 설정의 <b>소리 켜기</b> + 항목별 소리가 '소리 없음'이 아닌지. [음성 들어보기]로 확인.</td></tr>
+<tr><td>스크린샷 · 방송에 오버레이가 안 찍힘</td><td>정상입니다(기본). 필요하면 '오버레이를 스크린샷에 포함', OBS 는 <b>디스플레이 캡처</b>로.</td></tr>
+<tr><td>경매장 "400 OPENAPI00004"</td><td>경매장에 없는 이름은 자동으로 건너뜁니다. 계속 뜨면 아이템 이름을 [이름 찾기]로 고르세요.</td></tr>
+<tr><td>경매장 시세가 안 옴</td><td>API 키 확인, 하루 한도(1000회) 확인. 인터넷 연결.</td></tr>
+<tr><td>은행 잔액을 못 읽음</td><td>① 창 제목 다시 지정, 잔액 칸을 조금 넓게. '화면 금액 알려주기'로 배우기. 밝은 배경 앞이면 경매장 창을 어두운 곳으로.</td></tr>
+<tr><td>백신이 exe 를 막음</td><td>PyInstaller 오탐. 폴더를 예외 등록 후 다시 압축 풀기.</td></tr>
+<tr><td>갑자기 꺼짐 · 이상 동작</td><td>exe 옆 <code>mabiaura.log</code> 를 보내 주세요.</td></tr>
+</table>
+</section><section class="chap" id="files">
+<h1><span class="no">15</span>파일 위치 · 업데이트 · 진단 보내기</h1>
+<table class="grid">
+<tr><th>위치 (mabiaura 폴더 안)</th><th>내용</th></tr>
+<tr><td><code>mabiaura.exe</code>, <code>_internal\</code></td><td>프로그램. 업데이트 때 덮어씀</td></tr>
+<tr><td><code>profiles\config.json</code></td><td>캐릭터 · 영역 · 감시 항목 · 오버레이 위치 · 일반 설정</td></tr>
+<tr><td><code>profiles\goal.json</code></td><td>목표 금액 목록 · API 키 · 잔액 영역</td></tr>
+<tr><td><code>profiles\specup.json</code></td><td>스펙업 캐릭터 · 장비 · 가격</td></tr>
+<tr><td><code>profiles\specup_market\</code></td><td>매물 찾기 경매장 캐시 (1시간)</td></tr>
+<tr><td><code>diag\</code></td><td>진단 프레임 · 샘플 수집</td></tr>
+<tr><td><code>mabiaura.log</code></td><td>실행 기록</td></tr>
+</table>
+<h3 id="files-1">문제를 알릴 때 보내 주면 좋은 것</h3>
+<ol class="steps num">
+<li>일반 설정 → <b>문제 진단용 프레임 자동 저장</b>을 켜고 문제가 생기는 상황을 재현합니다.</li>
+<li><code>diag</code> 폴더의 png 들과 <code>mabiaura.log</code> 를 압축해서 보냅니다.</li>
+<li>무엇을 했고 무엇이 기대와 달랐는지 한두 줄로 (예: "던전 보스방에서 마나실드가 켜져 있는데 꺼짐 알림").</li>
+</ol>
+<div class="callout warn"><b>게임 자체 스크린샷 기능으로 찍은 파일은 진단에 못 씁니다.</b> 글꼴이 실제 화면과 달라요. 위 방법으로 저장된 파일만 보내 주세요.</div>
+<div class="endcard"><img src="img/icon.png"><div><b>마비오라 v2.0.2</b><br><span>즐거운 모험 되세요!</span></div></div>
+</section>
+<footer class="end">마비오라 v2.0.2 · 화면을 캡처해 읽기만 하는 비공식 팬 도구입니다. 게임 파일 · 메모리를 건드리지 않습니다.</footer></main></div>
+<div class="zoom"></div>
+<script>
+const zoom = document.querySelector('.zoom');
+document.addEventListener('click', e => {
+  if (zoom.classList.contains('on')) { zoom.classList.remove('on'); zoom.innerHTML = ''; return; }
+  const t = e.target.closest('.frame, .scene');
+  if (!t || e.target.closest('a')) return;
+  const c = t.cloneNode(true), img = t.querySelector('img');
+  const ar = t.classList.contains('scene') ? 16 / 9 : img.naturalWidth / img.naturalHeight;
+  c.style.width = Math.min(innerWidth * 0.96, innerHeight * 0.94 * ar) + 'px';
+  zoom.appendChild(c); zoom.classList.add('on');
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { zoom.classList.remove('on'); zoom.innerHTML = ''; } });
+document.querySelector('.topbar button').addEventListener('click', () => document.body.classList.toggle('nav'));
+document.querySelectorAll('.side a').forEach(a => a.addEventListener('click', () => document.body.classList.remove('nav')));
+const links = [...document.querySelectorAll('.side > ol > li')];
+const io = new IntersectionObserver(es => es.forEach(en => {
+  if (!en.isIntersecting) return;
+  links.forEach(li => { const on = li.firstElementChild.getAttribute('href') === '#' + en.target.id;
+    li.classList.toggle('open', on); li.firstElementChild.classList.toggle('on', on); });
+}), { rootMargin: '-10% 0px -80% 0px' });
+document.querySelectorAll('.chap').forEach(c => io.observe(c));
+</script>
+</body></html>
